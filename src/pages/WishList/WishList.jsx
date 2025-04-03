@@ -5,7 +5,7 @@ import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import WishlistItem from "../../components/Wishlist/WishlistItem";
 import { selectWishlist } from "../../store/slices/wishlistSlice";
-import "./Wishlist.css";
+import "./WishList.css";
 
 const Wishlist = () => {
   const wishlistItems = useSelector(selectWishlist);
