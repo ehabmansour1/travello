@@ -711,6 +711,9 @@ th {
 }
 
 @media (max-width: 1024px) {
+  .admin-main {
+    padding: 150px 1rem 1rem 1rem;
+  }
   .admin-container {
     flex-direction: column;
   }
@@ -737,6 +740,9 @@ th {
 }
 
 @media (max-width: 768px) {
+  .admin-main {
+    padding: 150px 1rem 1rem 1rem;
+  }
   .admin-container {
     padding: 1rem;
   }
