@@ -79,10 +79,10 @@ const UserDashboard = () => {
                     <nav className="dashboard-nav">
                         {/* نقل user-info إلى داخل sidebar */}
                         <div className="user-info">
-                            <img src="" alt="Profile" className="avatar" />
+                            <img src="https://tse4.mm.bing.net/th?id=OIP.hGSCbXlcOjL_9mmzerqAbQHaHa&rs=1&pid=ImgDetMain" alt="Profile" className="avatar" />
                             <div className="user-details">
                                 <h3>John Doe</h3>
-                                <p>Member since 2023</p>
+                                <p>Member since 2025</p>
                             </div>
                         </div>
                         <a
