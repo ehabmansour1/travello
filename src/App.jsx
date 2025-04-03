@@ -10,6 +10,7 @@ import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
 import ForgetPassword from "./pages/ForgetPassword/ForgetPassword";
 import Tours from "./pages/Tours/Tours";
+import Wishlist from "./pages/Wishlist/Wishlist";
 import Header from "./components/Header/Header";
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/home" element={<Home />} />
         <Route path="/tours" element={<Tours />} />
+        <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />

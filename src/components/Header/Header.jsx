@@ -1,8 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Header.css";
 
 const Header = () => {
+  const location = useLocation();
+
   return (
     <header>
       <nav>
@@ -11,19 +13,44 @@ const Header = () => {
           <span>Travello</span>
         </div>
         <div className="nav-items">
-          <Link to="/" className="nav-link active">
+          <Link
+            to="/home"
+            className={`nav-link ${
+              location.pathname === "/home" ? "active" : ""
+            }`}
+          >
             Home
           </Link>
-          <Link to="/tours" className="nav-link">
+          <Link
+            to="/tours"
+            className={`nav-link ${
+              location.pathname === "/tours" ? "active" : ""
+            }`}
+          >
             Tour Packages
           </Link>
-          <Link to="/bookings" className="nav-link">
-            Bookings
+          <Link
+            to="/wishlist"
+            className={`nav-link ${
+              location.pathname === "/wishlist" ? "active" : ""
+            }`}
+          >
+            Wishlist
           </Link>
-          <Link to="/about" className="nav-link">
+          <Link
+            to="/about"
+            className={`nav-link ${
+              location.pathname === "/about" ? "active" : ""
+            }`}
+          >
             About Us
           </Link>
-          <Link to="/contact" className="nav-link">
+          <Link
+            to="/contact"
+            className={`nav-link ${
+              location.pathname === "/contact" ? "active" : ""
+            }`}
+          >
             Contact
           </Link>
           <Link to="/login" className="btn-secondary">
