@@ -336,7 +336,8 @@ th {
 @media (max-width: 1024px) {
     .dashboard-main {
         padding: 150px 1rem 1rem 1rem;
-      }
+    }
+
     .dashboard-container {
         flex-direction: column;
     }
@@ -361,7 +362,8 @@ th {
 @media (max-width: 768px) {
     .dashboard-main {
         padding: 150px 1rem 1rem 1rem;
-      }
+    }
+
     .dashboard-container {
         padding: 1rem;
     }

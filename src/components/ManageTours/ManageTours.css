@@ -1,0 +1,177 @@
+
+.tours-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .tours-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .tours-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .tour-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+  
+  .tour-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .tour-image {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .tour-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .tour-badge.active {
+    background: rgba(51, 255, 153, 0.2);
+    color: #33ff99;
+  }
+  
+  .tour-badge.draft {
+    background: rgba(255, 153, 51, 0.2);
+    color: #ff9933;
+  }
+  
+  .tour-badge.archived {
+    background: rgba(255, 51, 102, 0.2);
+    color: #ff3366;
+  }
+  
+  .tour-content {
+    padding: 1.5rem;
+  }
+  
+  .tour-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+  }
+  
+  .tour-stats {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .tour-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .tour-modal {
+    max-width: 800px !important;
+  }
+  
+  .tour-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .tour-form-grid .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .image-upload-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .image-upload-item {
+    aspect-ratio: 1;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .image-upload-item:hover {
+    border-color: #ff3366;
+  }
+  
+  .image-upload-item.filled {
+    border: none;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .itinerary-builder {
+    margin: 1.5rem 0;
+  }
+  
+  .itinerary-day {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .itinerary-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .availability-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .date-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .date-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
