@@ -834,3 +834,34 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+.wishlist-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid black;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+
+}
+
+.wishlist-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.wishlist-btn.active {
+  background: #ff3366;
+}
+
+.wishlist-btn.active:hover {
+  background: #ff1a4f;
+}

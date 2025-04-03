@@ -1,8 +1,16 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToWishlist,
+  removeFromWishlist,
+  selectIsInWishlist,
+} from "../../store/slices/wishlistSlice";
 import "./Tours.css";
 
 const Tours = () => {
   const [activeTab, setActiveTab] = useState("all");
+  const dispatch = useDispatch();
+  const wishlistState = useSelector((state) => state.wishlist);
 
   const tours = [
     {
@@ -27,7 +35,6 @@ const Tours = () => {
         "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1000&auto=format&fit=crop",
       category: "cultural",
     },
-
     {
       id: 6,
       name: "Machu Picchu",
@@ -41,6 +48,17 @@ const Tours = () => {
     },
   ];
 
+  const handleWishlistToggle = (tour) => {
+    const isInWishlist = wishlistState.items.some(
+      (item) => item.id === tour.id
+    );
+    if (isInWishlist) {
+      dispatch(removeFromWishlist(tour.id));
+    } else {
+      dispatch(addToWishlist(tour));
+    }
+  };
+
   const filteredTours =
     activeTab === "all"
       ? tours
@@ -49,37 +67,74 @@ const Tours = () => {
   return (
     <div className="tours-page">
       <div className="tours-header">
-        <h1>Our Tours</h1>
-        <p>Discover amazing destinations with our curated tours</p>
+        <h1>Tour Packages</h1>
+        <p>Discover our carefully curated selection of tours</p>
+      </div>
+
+      <div className="tours-filters">
+        <button
+          className={`filter-btn ${activeTab === "all" ? "active" : ""}`}
+          onClick={() => setActiveTab("all")}
+        >
+          All Tours
+        </button>
+        <button
+          className={`filter-btn ${activeTab === "adventure" ? "active" : ""}`}
+          onClick={() => setActiveTab("adventure")}
+        >
+          Adventure
+        </button>
+        <button
+          className={`filter-btn ${activeTab === "cultural" ? "active" : ""}`}
+          onClick={() => setActiveTab("cultural")}
+        >
+          Cultural
+        </button>
+        <button
+          className={`filter-btn ${activeTab === "historical" ? "active" : ""}`}
+          onClick={() => setActiveTab("historical")}
+        >
+          Historical
+        </button>
       </div>
 
       <div className="tours-grid">
-        {filteredTours.map((tour) => (
-          <div key={tour.id} className="tour-card">
-            <div className="tour-image">
-              <img src={tour.image} alt={tour.name} />
-              <div className="tour-price">${tour.price}</div>
-            </div>
-            <div className="tour-content">
-              <div className="tour-header">
+        {filteredTours.map((tour) => {
+          const isInWishlist = wishlistState.items.some(
+            (item) => item.id === tour.id
+          );
+          return (
+            <div key={tour.id} className="tour-card">
+              <div
+                className="tour-image"
+                style={{ backgroundImage: `url(${tour.image})` }}
+              >
+                <button
+                  className={`wishlist-btn ${isInWishlist ? "active" : ""}`}
+                  onClick={() => handleWishlistToggle(tour)}
+                >
+                  <i className={`fas fa-heart`}></i>
+                </button>
+              </div>
+              <div className="tour-content">
                 <h3>{tour.name}</h3>
+                <div className="tour-location">
+                  <i className="fas fa-map-marker-alt"></i>
+                  {tour.location}
+                </div>
                 <div className="tour-rating">
                   <i className="fas fa-star"></i>
-                  <span>{tour.rating}</span>
+                  {tour.rating}
                 </div>
+                <div className="tour-details">
+                  <span className="tour-price">${tour.price}</span>
+                  <span className="tour-duration">{tour.duration}</span>
+                </div>
+                <button className="btn-primary">View Details</button>
               </div>
-              <div className="tour-info">
-                <span>
-                  <i className="fas fa-map-marker-alt"></i> {tour.location}
-                </span>
-                <span>
-                  <i className="fas fa-clock"></i> {tour.duration}
-                </span>
-              </div>
-              <button className="book-now-btn">Book Now</button>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
