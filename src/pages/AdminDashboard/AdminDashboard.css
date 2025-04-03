@@ -76,7 +76,11 @@
 }
 
 .admin-nav a.active {
-  background: linear-gradient(135deg, rgba(255, 51, 102, 0.2), rgba(255, 153, 51, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 51, 102, 0.2),
+    rgba(255, 153, 51, 0.2)
+  );
   border: 1px solid rgba(255, 51, 102, 0.3);
   color: #fff;
 }
@@ -128,10 +132,18 @@
   backdrop-filter: blur(10px);
 }
 
-.stat-card.primary { border-color: rgba(255, 51, 102, 0.3); }
-.stat-card.success { border-color: rgba(51, 255, 153, 0.3); }
-.stat-card.warning { border-color: rgba(255, 153, 51, 0.3); }
-.stat-card.info { border-color: rgba(51, 153, 255, 0.3); }
+.stat-card.primary {
+  border-color: rgba(255, 51, 102, 0.3);
+}
+.stat-card.success {
+  border-color: rgba(51, 255, 153, 0.3);
+}
+.stat-card.warning {
+  border-color: rgba(255, 153, 51, 0.3);
+}
+.stat-card.info {
+  border-color: rgba(51, 153, 255, 0.3);
+}
 
 .stat-icon {
   width: 60px;
@@ -143,7 +155,7 @@
   font-size: 1.5rem;
 }
 
-.stat-card.primary .stat-icon { 
+.stat-card.primary .stat-icon {
   background: rgba(255, 51, 102, 0.2);
   color: #ff3366;
 }
@@ -176,8 +188,12 @@
   gap: 0.25rem;
 }
 
-.stat-change.positive { color: #33ff99; }
-.stat-change.negative { color: #ff3366; }
+.stat-change.positive {
+  color: #33ff99;
+}
+.stat-change.negative {
+  color: #ff3366;
+}
 
 .charts-grid {
   display: grid;
@@ -253,7 +269,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -478,7 +495,7 @@ th {
   margin-bottom: 2rem;
 }
 
-.tours-grid {
+.admin-dashboard .tours-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
@@ -697,23 +714,23 @@ th {
   .admin-container {
     flex-direction: column;
   }
-  
+
   .admin-sidebar {
     width: 100%;
     height: auto;
     position: static;
   }
-  
+
   .admin-nav {
     flex-direction: row;
     overflow-x: auto;
     padding-bottom: 1rem;
   }
-  
+
   .admin-nav a {
     white-space: nowrap;
   }
-  
+
   .charts-grid {
     grid-template-columns: 1fr;
   }
@@ -723,55 +740,55 @@ th {
   .admin-container {
     padding: 1rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .header-actions {
     flex-direction: column;
   }
-  
+
   .search-group {
     width: 100%;
   }
-  
+
   .bookings-table {
     overflow-x: auto;
   }
-  
+
   .user-filters {
     flex-direction: column;
   }
-  
+
   .user-actions {
     flex-direction: column;
   }
-  
+
   .user-actions button {
     width: 100%;
   }
-  
+
   .tours-filters {
     flex-direction: column;
   }
-  
+
   .tour-form-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .image-upload-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .tour-actions {
     flex-direction: column;
   }
-  
+
   .tour-actions button {
     width: 100%;
   }
-  
+
   .payment-details .details-grid {
     grid-template-columns: 1fr;
   }
@@ -794,7 +811,7 @@ th {
   flex-wrap: wrap;
 }
 
-.search-input {
+.admin-dashboard .search-input {
   min-width: 300px;
   padding: 0.75rem 1rem;
   border-radius: 12px;
@@ -812,19 +829,6 @@ th {
   color: white;
   outline: none;
   min-width: 150px;
-}
-
-.btn-secondary {
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .btn-secondary:hover {
@@ -856,7 +860,7 @@ th {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.action-buttons {
+.admin-dashboard .action-buttons {
   display: flex;
   gap: 0.5rem;
 }
