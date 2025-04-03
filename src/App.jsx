@@ -10,7 +10,7 @@ import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
 import ForgetPassword from "./pages/ForgetPassword/ForgetPassword";
 import Tours from "./pages/Tours/Tours";
-import Wishlist from "./pages/Wishlist/Wishlist";
+import Wishlist from "./pages/WishList/WishList";
 import Header from "./components/Header/Header";
 
 const App = () => {
