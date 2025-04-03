@@ -59,6 +59,12 @@ const Header = () => {
           <Link to="/register" className="btn-primary">
             Sign Up
           </Link>
+          <Link to="/user-dashboard" className="btn-primary">
+            UserDashboard
+          </Link>
+          <Link to="/admin-dashboard" className="btn-primary">
+            AdminDashboard
+          </Link>
         </div>
         <div className="hamburger">
           <div></div>

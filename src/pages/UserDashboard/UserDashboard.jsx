@@ -1,8 +1,11 @@
 import "./UserDashboard.css";
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import WishlistItem from '../../components/Wishlist/WishlistItem';
 
 const UserDashboard = () => {
     const [activeTab, setActiveTab] = useState('overview');
+    const wishlist = useSelector((state) => state.wishlist.items);
 
     const upcomingTrips = [
         {
@@ -113,7 +116,7 @@ const UserDashboard = () => {
                                 handleTabClick('wishlist');
                             }}
                         >
-                            Saved Trips
+                            WishList
                         </a>
                         <a
                             href="#invoices"
@@ -253,9 +256,14 @@ const UserDashboard = () => {
                     {activeTab === 'wishlist' && (
                         <div className="dashboard-tab active" id="wishlist">
                             <h2>Saved Trips</h2>
-                            <div className="wishlist-grid">
-                                {/* هنا يتم عرض الرحلات المحفوظة */}
-                                <p>No saved trips available.</p>
+                            <div className="wishlist-container">
+                                {wishlist.length > 0 ? (
+                                    wishlist.map((tour) => (
+                                        <WishlistItem key={tour.id} tour={tour} />
+                                    ))
+                                ) : (
+                                    <p>No saved trips available.</p>
+                                )}
                             </div>
                         </div>
                     )}
