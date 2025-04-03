@@ -1,0 +1,98 @@
+/* أنماط إدارة الحجوزات */
+.header-actions {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .search-filters {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .admin-dashboard .search-input {
+    min-width: 300px;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    outline: none;
+  }
+  
+  .filter-select {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    outline: none;
+    min-width: 150px;
+  }
+  
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .bookings-table-container {
+    margin-top: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+  }
+  
+  .bookings-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 1rem;
+  }
+  
+  .bookings-table th,
+  .bookings-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .bookings-table th {
+    text-align: left;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+  }
+  
+  .admin-dashboard .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+    display: inline-block;
+  }
+  
+  .status-badge.pending {
+    background: rgba(255, 153, 51, 0.2);
+    color: #ff9933;
+  }
+  
+  .status-badge.confirmed {
+    background: rgba(51, 255, 153, 0.2);
+    color: #33ff99;
+  }
+  
+  .status-badge.cancelled {
+    background: rgba(255, 51, 102, 0.2);
+    color: #ff3366;
+  }
+  

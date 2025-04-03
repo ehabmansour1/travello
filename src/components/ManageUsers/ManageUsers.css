@@ -1,0 +1,125 @@
+/* أنماط إدارة المستخدمين */
+.users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .user-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .user-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+  
+  .user-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .user-card-header {
+    position: relative;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+  }
+  
+  .user-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .user-status.active {
+    background: rgba(51, 255, 153, 0.2);
+    color: #33ff99;
+  }
+  
+  .user-status.suspended {
+    background: rgba(255, 51, 102, 0.2);
+    color: #ff3366;
+  }
+  
+  .user-card-content {
+    padding: 1.5rem;
+  }
+  
+  .user-email {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0.5rem 0;
+  }
+  
+  .user-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .user-role {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .user-role.customer {
+    background: rgba(51, 153, 255, 0.2);
+    color: #3399ff;
+  }
+  
+  .user-role.staff {
+    background: rgba(255, 153, 51, 0.2);
+    color: #ff9933;
+  }
+  
+  .user-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+  }
+  
+  .user-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .btn-danger {
+    background: rgba(255, 51, 102, 0.2);
+    border: 1px solid rgba(255, 51, 102, 0.3);
+    color: #ff3366;
+  }
+  
+  .btn-danger:hover {
+    background: rgba(255, 51, 102, 0.3);
+  }
+  
