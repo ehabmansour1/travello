@@ -12,6 +12,7 @@ import ForgetPassword from "./pages/ForgetPassword/ForgetPassword";
 import Tours from "./pages/Tours/Tours";
 import Wishlist from "./pages/WishList/WishList";
 import Header from "./components/Header/Header";
+import Booking from "./pages/Booking/Booking";
 
 const App = () => {
   return (
@@ -25,6 +26,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/booking" element={<Booking />} />
+
       </Routes>
     </Router>
   );
