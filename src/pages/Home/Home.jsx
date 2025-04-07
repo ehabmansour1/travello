@@ -7,6 +7,9 @@ import BlogSection from "../../components/BlogSection/BlogSection";
 import Footer from "../../components/Footer/Footer";
 import ChatWidget from "../../components/ChatWidget/ChatWidget";
 import "./Home.css";
+import { Link } from "react-router-dom";
+import PaymentPage from "../Payment/Payment";
+import Payment from "../Payment/Payment";
 
 // Tour data
 const tours = [
@@ -119,12 +122,12 @@ const Home = () => {
       </div>
 
       <Header />
+      
       <Hero
         searchData={searchData}
         handleSearchChange={handleSearchChange}
         handleSearchSubmit={handleSearchSubmit}
       />
-
       <FeaturedTours tours={tours} />
       <Testimonials
         testimonials={testimonials}
