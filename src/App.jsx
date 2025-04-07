@@ -15,6 +15,7 @@ import Header from "./components/Header/Header";
 import UserDashboard from "./pages/UserDashboard/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import TourDetails from "./pages/TourDetails/TourDetails";
+import Booking from "./pages/Booking/Booking";
 
 
 const App = () => {
@@ -32,6 +33,8 @@ const App = () => {
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/booking" element={<Booking />} />
+
       </Routes>
     </Router>
   );

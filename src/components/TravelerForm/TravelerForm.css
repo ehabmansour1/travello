@@ -1,0 +1,67 @@
+.booking-step {
+    display: block;
+    margin: 2rem auto;
+    max-width: 800px;
+    padding: 2rem;
+    border-radius: 24px;
+    backdrop-filter: blur(10px);
+}
+
+.booking-step h2 {
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.7));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.travelers-info h3 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.form-input {
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    height: 50px;
+}
+
+.form-input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.additional-travelers {
+    margin-top: 2rem;
+}
+
+.additional-travelers .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.additional-travelers .form-group {
+    margin-bottom: 1rem;
+}
