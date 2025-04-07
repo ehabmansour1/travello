@@ -14,7 +14,11 @@ import Wishlist from "./pages/WishList/WishList";
 import Header from "./components/Header/Header";
 import UserDashboard from "./pages/UserDashboard/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+<<<<<<< HEAD
 import Payment from "./pages/Payment/Payment";
+=======
+import TourDetails from "./pages/TourDetails/TourDetails";
+>>>>>>> a2972d6c93c03ab69f16ee68d36704defd5a1341
 
 
 const App = () => {
@@ -27,6 +31,7 @@ const App = () => {
         <Route path="/tours" element={<Tours />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/tours/:id" element={<TourDetails />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
