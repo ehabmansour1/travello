@@ -14,6 +14,8 @@ import Wishlist from "./pages/WishList/WishList";
 import Header from "./components/Header/Header";
 import UserDashboard from "./pages/UserDashboard/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import Payment from "./pages/Payment/Payment";
+
 
 const App = () => {
   return (
@@ -29,6 +31,8 @@ const App = () => {
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/payment" element={<Payment />} />
+
       </Routes>
     </Router>
   );
