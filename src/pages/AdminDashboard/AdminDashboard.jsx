@@ -8,7 +8,7 @@ import ManageUsers from '../../components/ManageUsers/ManageUsers';
 import ManageTours from '../../components/ManageTours/ManageTours';
 // import ManageBlogs from './ManageBlogs';
 // import ManagePayments from './ManagePayments';
-// import AnalyticsReports from './AnalyticsReports';
+import Analytics from '../../components/Analytics/Analytics';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('tours'); // تغيير القيمة الافتراضية إلى 'tours'
@@ -101,7 +101,7 @@ const AdminDashboard = () => {
             {activeTab === 'payments' && <ManagePayments />}
           </div>
           <div className={`admin-tab ${activeTab === 'analytics' ? 'active' : ''}`}>
-            {activeTab === 'analytics' && <AnalyticsReports />}
+            {activeTab === 'analytics' && <Analytics />}
           </div>
         </main>
       </div>
