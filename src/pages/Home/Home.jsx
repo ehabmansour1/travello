@@ -124,6 +124,7 @@ const Home = () => {
         handleSearchChange={handleSearchChange}
         handleSearchSubmit={handleSearchSubmit}
       />
+
       <FeaturedTours tours={tours} />
       <Testimonials
         testimonials={testimonials}

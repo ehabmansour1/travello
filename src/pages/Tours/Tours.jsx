@@ -6,12 +6,13 @@ import {
   selectIsInWishlist,
 } from "../../store/slices/wishlistSlice";
 import "./Tours.css";
+import { Link } from "react-router-dom";
 
 const Tours = () => {
   const [activeTab, setActiveTab] = useState("all");
   const dispatch = useDispatch();
   const wishlistState = useSelector((state) => state.wishlist);
-
+  
   const tours = [
     {
       id: 3,
@@ -130,7 +131,7 @@ const Tours = () => {
                   <span className="tour-price">${tour.price}</span>
                   <span className="tour-duration">{tour.duration}</span>
                 </div>
-                <button className="btn-primary">View Details</button>
+                <Link to={`/tours/${tours.id}`} className="btn-primary">View Details</Link>
               </div>
             </div>
           );
