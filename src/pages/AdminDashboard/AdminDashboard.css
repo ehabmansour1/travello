@@ -1,0 +1,146 @@
+/* أنماط التخطيط العام والشريط الجانبي */
+.admin-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  margin-top: 80px;
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-sidebar {
+  width: 350px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  height: calc(105vh - 10px);
+  position: sticky;
+  top: 100px;
+}
+
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 2rem;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-details h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.user-details p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.admin-nav a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.admin-nav a i {
+  width: 20px;
+  text-align: center;
+}
+
+.admin-nav a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-nav a.active {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 51, 102, 0.2),
+    rgba(255, 153, 51, 0.2)
+  );
+  border: 1px solid rgba(255, 51, 102, 0.3);
+  color: #fff;
+}
+
+.admin-main {
+  flex: 1;
+  min-height: calc(100vh - 120px);
+}
+
+.admin-tab {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  width: 100%;
+}
+
+.admin-tab.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Media Queries للتجاوب */
+@media (max-width: 1024px) {
+  .admin-main {
+    padding: 300px 1rem 1rem 1rem;
+  }
+  .admin-container {
+    flex-direction: column;
+  }
+  .admin-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    margin: 0 0 50px 0;
+  }
+  .admin-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+  }
+  .admin-nav a {
+    white-space: nowrap;
+  }
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-main {
+    padding: 300px 1rem 1rem 1rem;
+  }
+  .admin-container {
+    padding: 1rem;
+  }
+  .admin-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    margin: 0 0 50px 0;
+  }
+}

@@ -13,6 +13,11 @@ import Tours from "./pages/Tours/Tours";
 import Wishlist from "./pages/WishList/WishList";
 import Header from "./components/Header/Header";
 import Booking from "./pages/Booking/Booking";
+import UserDashboard from "./pages/UserDashboard/UserDashboard";
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import Payment from "./pages/Payment/Payment";
+import TourDetails from "./pages/TourDetails/TourDetails";
+
 
 const App = () => {
   return (
@@ -24,10 +29,14 @@ const App = () => {
         <Route path="/tours" element={<Tours />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/tours/:id" element={<TourDetails />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/payment" element={<Payment />} />
         <Route path="/booking" element={<Booking />} />
-
+          
       </Routes>
     </Router>
   );

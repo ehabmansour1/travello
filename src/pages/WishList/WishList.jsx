@@ -26,8 +26,6 @@ const Wishlist = () => {
 
   return (
     <div className="wishlist-page">
-      <Header />
-
       <div className="wishlist-container">
         <div className="wishlist-header">
           <h1>My Wishlist</h1>
