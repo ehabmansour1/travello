@@ -128,8 +128,6 @@ const Home = () => {
         handleSearchChange={handleSearchChange}
         handleSearchSubmit={handleSearchSubmit}
       />
-      <Link to={"/Payment"}>Payment</Link>
-
       <FeaturedTours tours={tours} />
       <Testimonials
         testimonials={testimonials}

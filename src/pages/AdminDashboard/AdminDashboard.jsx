@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import './AdminDashboard.css';
 
-// // استيراد باقي المكونات
 import AdminOverview from '../../components/AdminOverview/AdminOverview';
 import ManageBookings from '../../components/ManageBookings/ManageBookings';
 import ManageUsers from '../../components/ManageUsers/ManageUsers';
 import ManageTours from '../../components/ManageTours/ManageTours';
-// import ManageBlogs from './ManageBlogs';
+import ManageBlogs from '../../components/ManageBlogs/ManageBlogs';
 import ManagePayments from '../../components/ManagePayments/ManagePayments';
 import Analytics from '../../components/Analytics/Analytics';
 
