@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import './AdminDashboard.css';
 
-// // استيراد باقي المكونات
 import AdminOverview from '../../components/AdminOverview/AdminOverview';
 import ManageBookings from '../../components/ManageBookings/ManageBookings';
 import ManageUsers from '../../components/ManageUsers/ManageUsers';
 import ManageTours from '../../components/ManageTours/ManageTours';
-// import ManageBlogs from './ManageBlogs';
-// import ManagePayments from './ManagePayments';
-// import AnalyticsReports from './AnalyticsReports';
+import ManageBlogs from '../../components/ManageBlogs/ManageBlogs';
+import ManagePayments from '../../components/ManagePayments/ManagePayments';
+import Analytics from '../../components/Analytics/Analytics';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('tours'); // تغيير القيمة الافتراضية إلى 'tours'
@@ -101,7 +100,7 @@ const AdminDashboard = () => {
             {activeTab === 'payments' && <ManagePayments />}
           </div>
           <div className={`admin-tab ${activeTab === 'analytics' ? 'active' : ''}`}>
-            {activeTab === 'analytics' && <AnalyticsReports />}
+            {activeTab === 'analytics' && <Analytics />}
           </div>
         </main>
       </div>

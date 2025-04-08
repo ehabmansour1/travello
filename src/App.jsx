@@ -12,10 +12,15 @@ import ForgetPassword from "./pages/ForgetPassword/ForgetPassword";
 import Tours from "./pages/Tours/Tours";
 import Wishlist from "./pages/WishList/WishList";
 import Header from "./components/Header/Header";
+import Booking from "./pages/Booking/Booking";
 import UserDashboard from "./pages/UserDashboard/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import Payment from "./pages/Payment/Payment";
 import TourDetails from "./pages/TourDetails/TourDetails";
 import ContactUs from "./pages/ContactUs/ContactUs";
+import LiveChat from "./pages/LiveChat/LiveChat";
+import UserProfile from "./pages/UserProfile/UserProfile";
+
 
 
 const App = () => {
@@ -34,6 +39,14 @@ const App = () => {
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/userProfile" element={<UserProfile />} />
+        <Route path="/liveChat" element={<LiveChat />} />
+
+
+
+        <Route path="/booking" element={<Booking />} />
+          
       </Routes>
     </Router>
   );
