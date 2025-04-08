@@ -1,0 +1,133 @@
+/* Blog container */
+.blog-container {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+  margin-top: 80px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header style */
+.blog-header {
+  text-align: center;
+  padding-bottom: 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.blog-header h1 {
+  font-size: 3rem;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* إضافة تأثير ظل للنص */
+}
+
+.blog-header p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 10px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* تحسين النص */
+}
+
+/* Blog list container */
+.blog-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.blog-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.blog-item:hover {
+  background: rgba(255, 255, 255, 0.2); /* تحسين تأثير hover */
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Blog thumbnail */
+.blog-thumbnail img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Blog content */
+.blog-content {
+  margin-top: 20px;
+}
+
+.blog-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.blog-meta {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 5px;
+}
+
+.blog-meta .author,
+.blog-meta .date {
+  display: inline-block;
+}
+
+.blog-excerpt {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 10px;
+  height: 60px;
+  overflow: hidden;
+}
+
+.read-more {
+  margin-top: 10px;
+  color: #ff3366;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.read-more:hover {
+  color: #ff6699;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .blog-list {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .blog-header p {
+    font-size: 1rem;
+  }
+}

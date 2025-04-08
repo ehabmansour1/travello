@@ -193,6 +193,7 @@
     padding: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
+    bottom: 12%;
   }
   
   .chat-form {
@@ -203,11 +204,11 @@
   
   .chat-tools {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.2rem;
     justify-content: end;
     position: absolute;
     left: 78%;
-    top: 28%;
+    top: 70%;
   }
   
   .tool-btn {
@@ -232,8 +233,9 @@
     border-radius: 20px;
     padding: 0.75rem 1rem;
     color: #fff;
-    width: 80%;
+    width: 75%;
     font-size: 1rem;
+    position: absolute;
   }
   
   .send-btn {
@@ -245,9 +247,38 @@
     align-items: center;
     justify-content: center;
     position: absolute;
-    left: 91%;
-    top: 25%;
+    left: 92%;
+    top: 60%;
+   
+
   }
+ 
+  
+  .btn-primary {
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ff3366, #ff9933);
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+
+
+.btn-primary:hover:before {
+  left: 0;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 51, 102, 0.3);
+}
   
   .chat-details {
     background: rgba(10, 10, 10, 0.95);
@@ -328,5 +359,19 @@
       border-radius: 0;
     }
   }
-  
-  
+
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 1rem;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
