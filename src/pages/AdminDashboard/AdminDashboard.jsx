@@ -7,7 +7,7 @@ import ManageBookings from '../../components/ManageBookings/ManageBookings';
 import ManageUsers from '../../components/ManageUsers/ManageUsers';
 import ManageTours from '../../components/ManageTours/ManageTours';
 // import ManageBlogs from './ManageBlogs';
-// import ManagePayments from './ManagePayments';
+import ManagePayments from '../../components/ManagePayments/ManagePayments';
 import Analytics from '../../components/Analytics/Analytics';
 
 const AdminDashboard = () => {
