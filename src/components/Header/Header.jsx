@@ -51,7 +51,7 @@ const Header = () => {
               location.pathname === "/contact" ? "active" : ""
             }`}
           >
-            Contact
+            Contact Us
           </Link>
           <Link to="/login" className="btn-secondary">
             Login
