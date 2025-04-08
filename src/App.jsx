@@ -18,6 +18,9 @@ import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import Payment from "./pages/Payment/Payment";
 import TourDetails from "./pages/TourDetails/TourDetails";
 
+import UserProfile from "./UserProfile/UserProfile";
+
+
 
 const App = () => {
   return (
@@ -35,6 +38,10 @@ const App = () => {
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/userProfile" element={<UserProfile />} />
+
+
+
         <Route path="/booking" element={<Booking />} />
           
       </Routes>
