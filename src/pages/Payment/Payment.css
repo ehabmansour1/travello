@@ -1,9 +1,24 @@
+body {
+  overflow-y: auto;
+}
+
+.background {
+  min-height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 .payment-container {
+  flex: 1;
   padding: 2rem;
   margin-top: 80px;
   max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  height: 100%;
 }
 
 .payment-header {
@@ -36,6 +51,7 @@
   border-radius: 24px;
   padding: 2rem;
   backdrop-filter: blur(10px);
+  height: auto;
 }
 
 .payment-group {
@@ -138,6 +154,9 @@
 .payment-summary {
   position: sticky;
   top: 100px;
+  height: auto;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
 }
 
 .summary-card {
@@ -193,6 +212,8 @@
   
   .payment-summary {
     position: static;
+    height: auto;
+    max-height: none;
   }
 }
 
