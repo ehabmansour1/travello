@@ -17,6 +17,7 @@ import UserDashboard from "./pages/UserDashboard/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import Payment from "./pages/Payment/Payment";
 import TourDetails from "./pages/TourDetails/TourDetails";
+import LiveChat from "./pages/LiveChat/LiveChat";
 import UserProfile from "./pages/UserProfile/UserProfile";
 
 
@@ -38,6 +39,7 @@ const App = () => {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/userProfile" element={<UserProfile />} />
+        <Route path="/liveChat" element={<LiveChat />} />
 
 
 
