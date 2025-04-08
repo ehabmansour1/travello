@@ -1,0 +1,55 @@
+.detailsContainer {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    margin: 0;
+    font-size: 2rem;
+  }
+  
+  .header p {
+    color: #ddd;
+    font-size: 0.9rem;
+  }
+  
+  .image {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .content {
+    line-height: 1.8;
+    font-size: 1rem;
+  }
+  
+  .backButton {
+    display: block;
+    margin: 30px auto 0;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .backButton:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+  

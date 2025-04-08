@@ -19,6 +19,7 @@ import Payment from "./pages/Payment/Payment";
 import TourDetails from "./pages/TourDetails/TourDetails";
 import LiveChat from "./pages/LiveChat/LiveChat";
 import UserProfile from "./pages/UserProfile/UserProfile";
+import Blogs from "./pages/Blogs/Blogs";
 
 
 
@@ -40,6 +41,7 @@ const App = () => {
         <Route path="/payment" element={<Payment />} />
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/liveChat" element={<LiveChat />} />
+        <Route path="/blogs" element={<Blogs />} />
 
 
 
