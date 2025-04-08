@@ -21,8 +21,7 @@ import ContactUs from "./pages/ContactUs/ContactUs";
 import LiveChat from "./pages/LiveChat/LiveChat";
 import UserProfile from "./pages/UserProfile/UserProfile";
 import Blogs from "./pages/Blogs/Blogs";
-
-
+import Footer from "./components/Footer/Footer";
 
 const App = () => {
   return (
@@ -45,11 +44,9 @@ const App = () => {
         <Route path="/liveChat" element={<LiveChat />} />
         <Route path="/blogs" element={<Blogs />} />
 
-
-
         <Route path="/booking" element={<Booking />} />
-          
       </Routes>
+      <Footer />
     </Router>
   );
 };

@@ -83,7 +83,6 @@ const Home = () => {
     guests: "2 Adults",
   });
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [newsletterEmail, setNewsletterEmail] = useState("");
 
   useEffect(() => {
     const testimonialInterval = setInterval(() => {
@@ -107,22 +106,12 @@ const Home = () => {
     console.log("Search data:", searchData);
   };
 
-  const handleNewsletterSubmit = (e) => {
-    e.preventDefault();
-    // Handle newsletter subscription
-    console.log("Newsletter subscription:", newsletterEmail);
-    setNewsletterEmail("");
-  };
-
   return (
     <div className="home">
       <div className="background">
         <div className="gradient-sphere"></div>
         <div className="gradient-sphere secondary"></div>
       </div>
-
-      <Header />
-      
       <Hero
         searchData={searchData}
         handleSearchChange={handleSearchChange}
@@ -135,11 +124,7 @@ const Home = () => {
       />
       <BlogSection blogPosts={blogPosts} />
       <ChatWidget />
-      <Footer
-        newsletterEmail={newsletterEmail}
-        handleNewsletterSubmit={handleNewsletterSubmit}
-        setNewsletterEmail={setNewsletterEmail}
-      />
+
     </div>
   );
 };
