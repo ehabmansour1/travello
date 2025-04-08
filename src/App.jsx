@@ -22,6 +22,7 @@ import LiveChat from "./pages/LiveChat/LiveChat";
 import UserProfile from "./pages/UserProfile/UserProfile";
 import Blogs from "./pages/Blogs/Blogs";
 import Footer from "./components/Footer/Footer";
+import About from "./pages/About/About";
 
 const App = () => {
   return (
@@ -42,8 +43,8 @@ const App = () => {
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/liveChat" element={<LiveChat />} />
         <Route path="/blogs" element={<Blogs />} />
-
         <Route path="/booking" element={<Booking />} />
+        <Route path="/about" element={<About />} />
       </Routes>
       <Footer />
     </Router>

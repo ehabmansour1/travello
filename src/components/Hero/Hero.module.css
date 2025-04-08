@@ -81,3 +81,8 @@
     width: 100%;
   }
 }
+
+ option {
+  background: #222;
+  color: #fff;
+}
