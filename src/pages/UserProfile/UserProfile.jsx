@@ -30,7 +30,7 @@ const UserProfile = () => {
     showNotification('Changes saved successfully!');
   };
 
-  // Show notifications
+  // Show notification
   const showNotification = (message) => {
     alert(message);
   };

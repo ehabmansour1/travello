@@ -17,8 +17,7 @@ import UserDashboard from "./pages/UserDashboard/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import Payment from "./pages/Payment/Payment";
 import TourDetails from "./pages/TourDetails/TourDetails";
-
-import UserProfile from "./UserProfile/UserProfile";
+import UserProfile from "./pages/UserProfile/UserProfile";
 
 
 
