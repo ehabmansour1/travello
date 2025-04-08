@@ -17,6 +17,7 @@ import UserDashboard from "./pages/UserDashboard/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import Payment from "./pages/Payment/Payment";
 import TourDetails from "./pages/TourDetails/TourDetails";
+import ContactUs from "./pages/ContactUs/ContactUs";
 import LiveChat from "./pages/LiveChat/LiveChat";
 import UserProfile from "./pages/UserProfile/UserProfile";
 
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/tours" element={<Tours />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/contact" element={<ContactUs />} />
         <Route path="/login" element={<Login />} />
         <Route path="/tours/:id" element={<TourDetails />} />
         <Route path="/register" element={<Register />} />

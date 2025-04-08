@@ -1,6 +1,11 @@
 .tour-details-header {
     margin-bottom: 2rem;
   }
+
+  .tour-details-container{
+    padding: 40px;
+    padding-top: 120px;
+  }
   
   .btn-back {
     background: none;
@@ -88,6 +93,8 @@
     margin-top: 2rem;
   }
   
+
+
   .highlight-item {
     text-align: center;
   }

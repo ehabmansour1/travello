@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from "react-router-dom";
-
+import styles from "./TourDetails.module.css"; // استيراد كـ module
 
 const TourDetails = () => {
   const [mainImage, setMainImage] = useState('https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b');
@@ -33,44 +33,44 @@ const TourDetails = () => {
   const { subtotal, total } = updateTotal();
 
   return (
-    <div className="tour-details-container">
-      <div className="tour-details-header">
-        <button className="btn-back" onClick={() => window.history.back()}>
+    <div className={styles["tour-details-container"]}>
+      <div className={styles["tour-details-header"]}>
+        <button className={styles["btn-back"]} onClick={() => window.history.back()}>
           <i className="fas fa-arrow-left"></i> Back to Tours
         </button>
         <h1>Majestic Switzerland</h1>
-        <div className="tour-meta">
-          <div className="tour-rating">
+        <div className={styles["tour-meta"]}>
+          <div className={styles["tour-rating"]}>
             <span>★★★★★</span>
             <span>(4.9)</span>
           </div>
-          <div className="tour-location">
+          <div className={styles["tour-location"]}>
             <i className="fas fa-map-marker-alt"></i>
             <span>Zurich • Lucerne • Interlaken • Zermatt</span>
           </div>
         </div>
       </div>
 
-      <div className="tour-gallery">
-        <div className="gallery-main">
+      <div className={styles["tour-gallery"]}>
+        <div className={styles["gallery-main"]}>
           <img src={mainImage} alt="Main Tour" />
         </div>
-        <div className="gallery-thumbnails">
+        <div className={styles["gallery-thumbnails"]}>
           {thumbnails.map((thumb, index) => (
             <img
               key={index}
               src={thumb}
               alt={`Thumbnail ${index + 1}`}
-              className={activeThumbnail === index ? 'active' : ''}
+              className={activeThumbnail === index ? styles["active"] : ''}
               onClick={() => handleThumbnailClick(thumb, index)}
             />
           ))}
         </div>
       </div>
 
-      <div className="tour-content-grid">
-        <div className="tour-main-content">
-          <section className="tour-section">
+      <div className={styles["tour-content-grid"]}>
+        <div className={styles["tour-main-content"]}>
+          <section className={styles["tour-section"]}>
             <h2>Tour Overview</h2>
             <p>
               Experience the breathtaking beauty of Switzerland on this 7-day
@@ -80,28 +80,28 @@ const TourDetails = () => {
             </p>
           </section>
 
-          <section className="tour-section">
+          <section className={styles["tour-section"]}>
             <h2>Itinerary</h2>
-            <div className="itinerary-timeline">
-              <div className="timeline-item">
-                <div className="day-badge">Day 1</div>
-                <div className="timeline-content">
+            <div className={styles["itinerary-timeline"]}>
+              <div className={styles["timeline-item"]}>
+                <div className={styles["day-badge"]}>Day 1</div>
+                <div className={styles["timeline-content"]}>
                   <h3>Arrival in Zurich</h3>
                   <p>Welcome meeting, city orientation walk, and welcome dinner</p>
-                  <div className="included-items">
-                    <span className="included-item"><i className="fas fa-utensils"></i> Dinner</span>
-                    <span className="included-item"><i className="fas fa-hotel"></i> Hotel</span>
+                  <div className={styles["included-items"]}>
+                    <span className={styles["included-item"]}><i className="fas fa-utensils"></i> Dinner</span>
+                    <span className={styles["included-item"]}><i className="fas fa-hotel"></i> Hotel</span>
                   </div>
                 </div>
               </div>
-              <div className="timeline-item">
-                <div className="day-badge">Day 2</div>
-                <div className="timeline-content">
+              <div className={styles["timeline-item"]}>
+                <div className={styles["day-badge"]}>Day 2</div>
+                <div className={styles["timeline-content"]}>
                   <h3>Lucerne Explorer</h3>
                   <p>Chapel Bridge, Lion Monument, Lake cruise, and free time</p>
-                  <div className="included-items">
-                    <span className="included-item"><i className="fas fa-utensils"></i> Breakfast</span>
-                    <span className="included-item"><i className="fas fa-hotel"></i> Hotel</span>
+                  <div className={styles["included-items"]}>
+                    <span className={styles["included-item"]}><i className="fas fa-utensils"></i> Breakfast</span>
+                    <span className={styles["included-item"]}><i className="fas fa-hotel"></i> Hotel</span>
                   </div>
                 </div>
               </div>
@@ -133,20 +133,20 @@ const TourDetails = () => {
               </ul>
             </div>
           </div>
-        </section>
+        </section>
         </div>
 
-        <div className="tour-sidebar">
-          <div className="booking-card">
-            <div className="booking-price">
-              <span className="price-amount">${pricePerPerson}</span>
-              <span className="price-per">per person</span>
+        <div className={styles["tour-sidebar"]}>
+          <div className={styles["booking-card"]}>
+            <div className={styles["booking-price"]}>
+              <span className={styles["price-amount"]}>${pricePerPerson}</span>
+              <span className={styles["price-per"]}>per person</span>
             </div>
 
-            <div className="booking-dates">
+            <div className={styles["booking-dates"]}>
               <h4>Available Dates</h4>
-              <div className="date-selector">
-                <select className="form-input">
+              <div className={styles["date-selector"]}>
+                <select className={styles["form-input"]}>
                   <option>June 15, 2024</option>
                   <option>July 1, 2024</option>
                   <option>July 15, 2024</option>
@@ -154,25 +154,25 @@ const TourDetails = () => {
               </div>
             </div>
 
-            <div className="booking-guests">
+            <div className={styles["booking-guests"]}>
               <h4>Number of Guests</h4>
-              <div className="quantity-selector">
+              <div className={styles["quantity-selector"]}>
                 <button
-                  className="quantity-btn minus"
+                  className={styles["quantity-btn"]}
                   onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
                 >
                   -
                 </button>
                 <input
                   type="number"
-                  className="quantity-input"
+                  className={styles["quantity-input"]}
                   value={quantity}
                   min="1"
                   max="15"
                   readOnly
                 />
                 <button
-                  className="quantity-btn plus"
+                  className={styles["quantity-btn"]}
                   onClick={() => setQuantity(prev => Math.min(15, prev + 1))}
                 >
                   +
@@ -180,25 +180,25 @@ const TourDetails = () => {
               </div>
             </div>
 
-            <div className="booking-total">
-              <div className="total-row">
+            <div className={styles["booking-total"]}>
+              <div className={styles["total-row"]}>
                 <span>Tour Price</span>
                 <span>${pricePerPerson} × {quantity}</span>
               </div>
-              <div className="total-row">
+              <div className={styles["total-row"]}>
                 <span>Taxes & Fees</span>
                 <span>${taxRate}</span>
               </div>
-              <div className="total-row final">
+              <div className={styles["total-row final"]}>
                 <span>Total</span>
                 <span>${total}</span>
               </div>
             </div>
 
-            <button className="btn-primary book-btn" onClick={() => alert('Booking functionality coming soon!')}>
+            <button className={styles["btn-primary"]} onClick={() => alert('Booking functionality coming soon!')}>
               Book Now
             </button>
-            <button className="btn-secondary inquire-btn" onClick={() => alert('Inquiry form coming soon!')}>
+            <button className={styles["btn-secondary"]} onClick={() => alert('Inquiry form coming soon!')}>
               Inquire About Tour
             </button>
           </div>
