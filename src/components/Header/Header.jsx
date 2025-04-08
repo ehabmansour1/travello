@@ -14,10 +14,8 @@ const Header = () => {
         </div>
         <div className="nav-items">
           <Link
-            to="/home"
-            className={`nav-link ${
-              location.pathname === "/home" ? "active" : ""
-            }`}
+            to="/"
+            className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
           >
             Home
           </Link>
