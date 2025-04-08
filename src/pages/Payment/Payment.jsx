@@ -1,8 +1,18 @@
-import React from "react";
-
+import React, { useState } from "react";
+import Footer from "../../components/Footer/Footer";
 import "./Payment.css";
 
 const PaymentPage = () => {
+      const [newsletterEmail, setNewsletterEmail] = useState("");
+      
+
+        const handleNewsletterSubmit = (e) => {
+            e.preventDefault();
+            // Handle newsletter subscription
+            console.log("Newsletter subscription:", newsletterEmail);
+            setNewsletterEmail("");
+          };
+
     return (
         <div className="background">
         <div className="gradient-sphere"></div>
@@ -18,7 +28,7 @@ const PaymentPage = () => {
 
             <div className="payment-grid">
             <div className="payment-methods-container">
-                <div className="payment-methods">
+                <div className="payment-methodss">
                 <div className="payment-group">
                     <h3>Payment Gateways</h3>
                     <div className="payment-options">
@@ -31,8 +41,10 @@ const PaymentPage = () => {
                         />
                         <div className="option-content">
                         <img
-                            src="https://fawry.com/assets/img/fawry-logo.png"
+                            src="https://images.wuzzuf-data.net/files/company_logo/140022050961e9107b8f272.png"
                             alt="Fawry Pay"
+                            width={120}
+                            height={100}
                         />
                         <span>Fawry Pay</span>
                         </div>
@@ -42,7 +54,7 @@ const PaymentPage = () => {
                         <input type="radio" name="payment" value="paymob" />
                         <div className="option-content">
                         <img
-                            src="https://paymob.com/images/logo.png"
+                            src="https://static.tildacdn.com/tild3733-6365-4462-b734-663363363136/logoC.png"
                             alt="Paymob"
                         />
                         <span>Paymob</span>
@@ -169,50 +181,13 @@ const PaymentPage = () => {
             </div>
         </div>
 
-        <footer>
-            <div className="footer-content">
-            <div className="footer-section">
-                <h3>About Wanderlust</h3>
-                <p>Making travel dreams come true since 2010</p>
-                <div className="social-links">
-                <a href="#">
-                    <i className="fab fa-facebook-f"></i>
-                </a>
-                <a href="#">
-                    <i className="fab fa-twitter"></i>
-                </a>
-                <a href="#">
-                    <i className="fab fa-instagram"></i>
-                </a>
-                </div>
-            </div>
-
-            <div className="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                <li>
-                    <a href="/tours">Tour Packages</a>
-                </li>
-                <li>
-                    <a href="/about">About Us</a>
-                </li>
-                <li>
-                    <a href="/contact">Contact</a>
-                </li>
-                <li>
-                    <a href="/privacy">Privacy Policy</a>
-                </li>
-                </ul>
-            </div>
-
-            {/* Newsletter Section */}
-            <div className="footer-section">
-                <h3>Newsletter</h3>
-                {/* Add your newsletter form here later */}
-            </div>
-            </div>
-        </footer>
+       <Footer
+                newsletterEmail={newsletterEmail}
+                handleNewsletterSubmit={handleNewsletterSubmit}
+                setNewsletterEmail={setNewsletterEmail}
+              />
         </div>
+        
     );
 };
 
