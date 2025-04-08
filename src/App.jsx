@@ -17,6 +17,7 @@ import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import Payment from "./pages/Payment/Payment";
 import TourDetails from "./pages/TourDetails/TourDetails";
 import Booking from "./pages/Booking/Booking";
+import UserProfile from "./UserProfile/UserProfile";
 
 
 const App = () => {
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
         <Route path="/payment" element={<Payment />} />
+        <Route path="/userProfile" element={<UserProfile />} />
 
 
         <Route path="/booking" element={<Booking />} />
