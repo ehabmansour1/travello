@@ -20,6 +20,10 @@ import TourDetails from "./pages/TourDetails/TourDetails";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import LiveChat from "./pages/LiveChat/LiveChat";
 import UserProfile from "./pages/UserProfile/UserProfile";
+
+import HelpCenter from "./pages/HelpCenter/HelpCenter";
+
+
 import Blogs from "./pages/Blogs/Blogs";
 import Footer from "./components/Footer/Footer";
 import About from "./pages/About/About";
@@ -33,6 +37,7 @@ const App = () => {
         <Route path="/tours" element={<Tours />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/help" element={<HelpCenter />} />
         <Route path="/login" element={<Login />} />
         <Route path="/tours/:id" element={<TourDetails />} />
         <Route path="/register" element={<Register />} />
