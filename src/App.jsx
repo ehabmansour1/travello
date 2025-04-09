@@ -24,13 +24,13 @@ import HelpCenter from "./pages/HelpCenter/HelpCenter";
 
 
 
+
 const App = () => {
   return (
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/tours" element={<Tours />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/contact" element={<ContactUs />} />
@@ -44,12 +44,11 @@ const App = () => {
         <Route path="/payment" element={<Payment />} />
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/liveChat" element={<LiveChat />} />
-
-
-
+        <Route path="/blogs" element={<Blogs />} />
         <Route path="/booking" element={<Booking />} />
-          
+        <Route path="/about" element={<About />} />
       </Routes>
+      <Footer />
     </Router>
   );
 };

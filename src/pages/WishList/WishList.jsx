@@ -76,7 +76,6 @@ const Wishlist = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };

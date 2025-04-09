@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
+// import { useParams } from "react-router-dom"; // Removed unused import
 import styles from "./TourDetails.module.css"; // استيراد كـ module
 
 const TourDetails = () => {
-  const [mainImage, setMainImage] = useState('https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b');
+  const [mainImage, setMainImage] = useState(
+    "https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b"
+  );
   const [activeThumbnail, setActiveThumbnail] = useState(0);
   const [quantity, setQuantity] = useState(2);
 
-  const { id } = useParams();
+  // const { id } = useParams(); // Removed unused id
 
   const thumbnails = [
-    'https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b',
-    'https://images.unsplash.com/photo-1578336647731-f08596362c9a',
-    'https://images.unsplash.com/photo-1602941900552-4ae132a5f9d9',
-    'https://images.unsplash.com/photo-1565557623262-b51c2513a641',
+    "https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b",
+    "https://images.unsplash.com/photo-1565557623262-b51c2513a641",
   ];
 
   const pricePerPerson = 2499;
@@ -25,17 +25,22 @@ const TourDetails = () => {
   };
 
   const updateTotal = () => {
-    const subtotal = pricePerPerson * quantity;
+    const subtotal = pricePerPerson * quantity; // Keep subtotal for calculation
     const total = subtotal + taxRate;
-    return { subtotal, total };
+    // Removed unused subtotal from return
+    return { total };
   };
 
-  const { subtotal, total } = updateTotal();
+  // Removed unused subtotal
+  const { total } = updateTotal();
 
   return (
     <div className={styles["tour-details-container"]}>
       <div className={styles["tour-details-header"]}>
-        <button className={styles["btn-back"]} onClick={() => window.history.back()}>
+        <button
+          className={styles["btn-back"]}
+          onClick={() => window.history.back()}
+        >
           <i className="fas fa-arrow-left"></i> Back to Tours
         </button>
         <h1>Majestic Switzerland</h1>
@@ -61,7 +66,7 @@ const TourDetails = () => {
               key={index}
               src={thumb}
               alt={`Thumbnail ${index + 1}`}
-              className={activeThumbnail === index ? styles["active"] : ''}
+              className={activeThumbnail === index ? styles["active"] : ""}
               onClick={() => handleThumbnailClick(thumb, index)}
             />
           ))}
@@ -87,10 +92,16 @@ const TourDetails = () => {
                 <div className={styles["day-badge"]}>Day 1</div>
                 <div className={styles["timeline-content"]}>
                   <h3>Arrival in Zurich</h3>
-                  <p>Welcome meeting, city orientation walk, and welcome dinner</p>
+                  <p>
+                    Welcome meeting, city orientation walk, and welcome dinner
+                  </p>
                   <div className={styles["included-items"]}>
-                    <span className={styles["included-item"]}><i className="fas fa-utensils"></i> Dinner</span>
-                    <span className={styles["included-item"]}><i className="fas fa-hotel"></i> Hotel</span>
+                    <span className={styles["included-item"]}>
+                      <i className="fas fa-utensils"></i> Dinner
+                    </span>
+                    <span className={styles["included-item"]}>
+                      <i className="fas fa-hotel"></i> Hotel
+                    </span>
                   </div>
                 </div>
               </div>
@@ -98,42 +109,60 @@ const TourDetails = () => {
                 <div className={styles["day-badge"]}>Day 2</div>
                 <div className={styles["timeline-content"]}>
                   <h3>Lucerne Explorer</h3>
-                  <p>Chapel Bridge, Lion Monument, Lake cruise, and free time</p>
+                  <p>
+                    Chapel Bridge, Lion Monument, Lake cruise, and free time
+                  </p>
                   <div className={styles["included-items"]}>
-                    <span className={styles["included-item"]}><i className="fas fa-utensils"></i> Breakfast</span>
-                    <span className={styles["included-item"]}><i className="fas fa-hotel"></i> Hotel</span>
+                    <span className={styles["included-item"]}>
+                      <i className="fas fa-utensils"></i> Breakfast
+                    </span>
+                    <span className={styles["included-item"]}>
+                      <i className="fas fa-hotel"></i> Hotel
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
-          <section class="tour-section">
-          <h2>What's Included</h2>
-          <div class="included-grid">
-            <div class="included-category">
-              <h3>Accommodation</h3>
-              <ul>
-                <li><i class="fas fa-check"></i> 6 nights in 4-star hotels</li>
-                <li><i class="fas fa-check"></i> Breakfast included daily</li>
-              </ul>
+          <section className={styles["tour-section"]}>
+            <h2>What's Included</h2>
+            <div className={styles["included-grid"]}>
+              <div className={styles["included-category"]}>
+                <h3>Accommodation</h3>
+                <ul>
+                  <li>
+                    <i className="fas fa-check"></i> 6 nights in 4-star hotels
+                  </li>
+                  <li>
+                    <i className="fas fa-check"></i> Breakfast included daily
+                  </li>
+                </ul>
+              </div>
+              <div className={styles["included-category"]}>
+                <h3>Transportation</h3>
+                <ul>
+                  <li>
+                    <i className="fas fa-check"></i> Airport transfers
+                  </li>
+                  <li>
+                    <i className="fas fa-check"></i> Swiss Travel Pass
+                  </li>
+                </ul>
+              </div>
+              <div className={styles["included-category"]}>
+                <h3>Activities</h3>
+                <ul>
+                  <li>
+                    <i className="fas fa-check"></i> Guided city tours
+                  </li>
+                  <li>
+                    <i className="fas fa-check"></i> Mountain excursions
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div class="included-category">
-              <h3>Transportation</h3>
-              <ul>
-                <li><i class="fas fa-check"></i> Airport transfers</li>
-                <li><i class="fas fa-check"></i> Swiss Travel Pass</li>
-              </ul>
-            </div>
-            <div class="included-category">
-              <h3>Activities</h3>
-              <ul>
-                <li><i class="fas fa-check"></i> Guided city tours</li>
-                <li><i class="fas fa-check"></i> Mountain excursions</li>
-              </ul>
-            </div>
-          </div>
-        </section>
+          </section>
         </div>
 
         <div className={styles["tour-sidebar"]}>
@@ -159,7 +188,7 @@ const TourDetails = () => {
               <div className={styles["quantity-selector"]}>
                 <button
                   className={styles["quantity-btn"]}
-                  onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                 >
                   -
                 </button>
@@ -173,7 +202,7 @@ const TourDetails = () => {
                 />
                 <button
                   className={styles["quantity-btn"]}
-                  onClick={() => setQuantity(prev => Math.min(15, prev + 1))}
+                  onClick={() => setQuantity((prev) => Math.min(15, prev + 1))}
                 >
                   +
                 </button>
@@ -183,7 +212,9 @@ const TourDetails = () => {
             <div className={styles["booking-total"]}>
               <div className={styles["total-row"]}>
                 <span>Tour Price</span>
-                <span>${pricePerPerson} × {quantity}</span>
+                <span>
+                  ${pricePerPerson} × {quantity}
+                </span>
               </div>
               <div className={styles["total-row"]}>
                 <span>Taxes & Fees</span>
@@ -195,11 +226,11 @@ const TourDetails = () => {
               </div>
             </div>
 
-            <button className={styles["btn-primary"]} onClick={() => alert('Booking functionality coming soon!')}>
+            <button
+              className={styles["btn-primary"]}
+              onClick={() => alert("Booking functionality coming soon!")}
+            >
               Book Now
-            </button>
-            <button className={styles["btn-secondary"]} onClick={() => alert('Inquiry form coming soon!')}>
-              Inquire About Tour
             </button>
           </div>
         </div>

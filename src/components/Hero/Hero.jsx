@@ -1,20 +1,20 @@
 import React from "react";
-import "./Hero.css";
+import styles from "./Hero.module.css";
 
 const Hero = ({ searchData, handleSearchChange, handleSearchSubmit }) => {
   return (
-    <section className="hero-section">
-      <div className="hero-content">
+    <section className={styles["hero-section"]}>
+      <div className={styles["hero-content"]}>
         <h1>Discover Your Next Adventure</h1>
         <p>
           Explore breathtaking destinations and create unforgettable memories
         </p>
 
-        <form className="search-bar" onSubmit={handleSearchSubmit}>
+        <form className={styles["search-bar"]} onSubmit={handleSearchSubmit}>
           <input
             type="text"
             name="destination"
-            className="search-input"
+            className={styles["search-input"]}
             placeholder="Where would you like to go?"
             value={searchData.destination}
             onChange={handleSearchChange}
@@ -22,13 +22,13 @@ const Hero = ({ searchData, handleSearchChange, handleSearchSubmit }) => {
           <input
             type="date"
             name="date"
-            className="search-input"
+            className={styles["search-input"]}
             value={searchData.date}
             onChange={handleSearchChange}
           />
           <select
             name="guests"
-            className="search-input"
+            className={styles["search-input"]}
             value={searchData.guests}
             onChange={handleSearchChange}
           >

@@ -118,14 +118,83 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Modal Styles */
+.modal {
+  position: fixed; /* Stay in place */
+  z-index: 11000 !important; /* Sit on top */
+  left: 0;
+  top: 0 !important; /* Reset top to 0 */
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  /* overflow: hidden; <-- Remove this */
+  overflow-y: auto; /* Make the overlay scrollable */
+  background-color: rgba(0, 0, 0, 0.7); /* Black w/ opacity */
+  /* display: flex; <-- Keep flex for centering? No, remove for scrolling. */
+  /* align-items: center; <-- Remove vertical centering */
+  /* justify-content: center; <-- Remove horizontal centering via flex */
+  padding: 5vh 1rem; /* Add vertical padding for scroll space, horizontal for small screens */
+  text-align: center; /* Allow margin: auto on child to work */
+}
+
+.modal-content {
+  background: #2c2c3e; /* Dark background for modal */
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 90%; /* Default width */
+  max-width: 500px; /* Default max-width */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+  /* max-height: 90vh; <-- Remove max-height */
+  /* overflow-y: auto; <-- Remove overflow */
+  /* display: flex; <-- Remove flex */
+  /* flex-direction: column; <-- Remove flex */
+  margin: auto; /* Center horizontally in scrollable overlay */
+  display: inline-block; /* Required for margin:auto with text-align: center */
+  text-align: left; /* Reset text align for content */
+  vertical-align: middle; /* Helps with inline-block centering if needed */
+}
+
+/* Make sure modal is still vertically centered if content is shorter than viewport */
+.modal::after {
+  content: "";
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  width: 0;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Specific overrides for the Tour Modal */
 .tour-modal {
-  max-width: 800px !important;
+  max-width: 800px !important; /* Override default max-width */
+}
+
+.tour-modal form {
+  flex-grow: 1; /* Allow form to take available space */
+  display: flex;
+  flex-direction: column;
 }
 
 .tour-form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+  margin-bottom: 1.5rem; /* Add space before next section */
 }
 
 .tour-form-grid .form-group.full-width {
@@ -134,9 +203,12 @@
 
 .image-upload-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(100px, 1fr)
+  ); /* Responsive grid */
   gap: 1rem;
-  margin: 1rem 0;
+  margin: 1rem 0 1.5rem 0; /* Add space below */
 }
 
 .image-upload-item {
@@ -148,10 +220,13 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.5rem;
 }
 
 .image-upload-item:hover {
   border-color: #ff3366;
+  color: #ff3366;
 }
 
 .image-upload-item.filled {
@@ -162,6 +237,9 @@
 
 .itinerary-builder {
   margin: 1.5rem 0;
+  flex-grow: 1; /* Allow builder to take space */
+  overflow-y: auto; /* Allow scroll within builder if needed */
+  padding-right: 5px; /* Space for potential scrollbar */
 }
 
 .itinerary-day {
@@ -179,6 +257,43 @@
   margin-bottom: 1rem;
 }
 
+.itinerary-day-header h4 {
+  margin: 0;
+}
+
+/* Styles for form inputs, selects, textareas - assuming they might exist globally */
+/* Add or adjust if needed */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #ff3366;
+}
+
+textarea.form-input {
+  resize: vertical;
+}
+
+/* Availability styles (if needed later) */
 .availability-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
