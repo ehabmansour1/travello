@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import './ManageTours.css';
+import React, { useState, useEffect } from "react";
+import "./ManageTours.css";
 
 // بيانات عينة للجولات
 const sampleTours = [
   {
     id: 1,
-    title: 'Majestic Switzerland',
-    image: 'https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b',
-    category: 'mountain',
+    title: "Majestic Switzerland",
+    image: "https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b",
+    category: "mountain",
     price: 2499,
-    duration: '7 days',
+    duration: "7 days",
     maxGroupSize: 15,
-    difficulty: 'moderate',
-    status: 'active',
+    difficulty: "moderate",
+    status: "active",
     bookings: 24,
     rating: 4.9,
-    description: 'Experience the breathtaking beauty of Switzerland on this 7-day adventure through the heart of the Alps.',
+    description:
+      "Experience the breathtaking beauty of Switzerland on this 7-day adventure through the heart of the Alps.",
     dates: [
-      { date: '2024-06-15', price: 2499, spotsLeft: 8 },
-      { date: '2024-07-01', price: 2699, spotsLeft: 12 }
-    ]
+      { date: "2024-06-15", price: 2499, spotsLeft: 8 },
+      { date: "2024-07-01", price: 2699, spotsLeft: 12 },
+    ],
   },
   // يمكنك إضافة المزيد من الجولات هنا
 ];
@@ -27,10 +28,24 @@ const sampleTours = [
 const ManageTours = () => {
   const [tours] = useState(sampleTours);
   const [filteredTours, setFilteredTours] = useState(sampleTours);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [showAddModal, setShowAddModal] = useState(false);
+
+  // Effect to control body scroll when modal is open/closed
+  useEffect(() => {
+    if (showAddModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = ""; // Restore default overflow
+    }
+
+    // Cleanup function to restore scroll when component unmounts
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showAddModal]); // Re-run effect when showAddModal changes
 
   // تصفية الجولات عند تغيير معطيات البحث أو الفلاتر
   useEffect(() => {
@@ -38,10 +53,14 @@ const ManageTours = () => {
   }, [searchTerm, categoryFilter, statusFilter, tours]);
 
   const filterTours = () => {
-    const filtered = tours.filter(tour => {
-      const matchesSearch = tour.title.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = categoryFilter === 'all' || tour.category === categoryFilter;
-      const matchesStatus = statusFilter === 'all' || tour.status === statusFilter;
+    const filtered = tours.filter((tour) => {
+      const matchesSearch = tour.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        categoryFilter === "all" || tour.category === categoryFilter;
+      const matchesStatus =
+        statusFilter === "all" || tour.status === statusFilter;
       return matchesSearch && matchesCategory && matchesStatus;
     });
     setFilteredTours(filtered);
@@ -61,15 +80,15 @@ const ManageTours = () => {
 
       <div className="tours-filters">
         <div className="search-group">
-          <input 
-            type="text" 
+          <input
+            type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input" 
+            className="search-input"
             placeholder="Search tours by name or destination..."
           />
         </div>
-        <select 
+        <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
           className="filter-select"
@@ -80,7 +99,7 @@ const ManageTours = () => {
           <option value="beach">Beach</option>
           <option value="mountain">Mountain</option>
         </select>
-        <select 
+        <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
           className="filter-select"
@@ -93,7 +112,7 @@ const ManageTours = () => {
       </div>
 
       <div className="tours-grid">
-        {filteredTours.map(tour => (
+        {filteredTours.map((tour) => (
           <div key={tour.id} className="tour-card">
             <div
               className="tour-image"
@@ -119,13 +138,28 @@ const ManageTours = () => {
               </div>
             </div>
             <div className="tour-actions">
-              <button className="btn-secondary btn-sm" onClick={() => { /* Add edit functionality */ }}>
+              <button
+                className="btn-secondary btn-sm"
+                onClick={() => {
+                  /* Add edit functionality */
+                }}
+              >
                 <i className="fas fa-edit"></i> Edit
               </button>
-              <button className="btn-secondary btn-sm" onClick={() => { /* Show availability functionality */ }}>
+              <button
+                className="btn-secondary btn-sm"
+                onClick={() => {
+                  /* Show availability functionality */
+                }}
+              >
                 <i className="fas fa-calendar"></i> Dates
               </button>
-              <button className="btn-danger btn-sm" onClick={() => { /* Delete tour functionality */ }}>
+              <button
+                className="btn-danger btn-sm"
+                onClick={() => {
+                  /* Delete tour functionality */
+                }}
+              >
                 <i className="fas fa-trash"></i> Remove
               </button>
             </div>
@@ -143,7 +177,7 @@ const ManageTours = () => {
               onSubmit={(e) => {
                 e.preventDefault();
                 // من هنا يمكن إضافة منطق إنشاء الجولة
-                alert('Tour created successfully!');
+                alert("Tour created successfully!");
                 handleCloseModal();
               }}
             >
@@ -210,7 +244,11 @@ const ManageTours = () => {
                   </div>
                   <div className="form-group">
                     <label>Description</label>
-                    <textarea className="form-input" rows="2" required></textarea>
+                    <textarea
+                      className="form-input"
+                      rows="2"
+                      required
+                    ></textarea>
                   </div>
                 </div>
                 <button type="button" className="btn-secondary">
@@ -219,7 +257,11 @@ const ManageTours = () => {
               </div>
 
               <div className="modal-actions">
-                <button type="button" className="btn-secondary" onClick={handleCloseModal}>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={handleCloseModal}
+                >
                   Cancel
                 </button>
                 <button type="submit" className="btn-primary">

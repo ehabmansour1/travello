@@ -15,7 +15,7 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  padding: 1rem 2rem;
 }
 
 .logo {
@@ -66,12 +66,6 @@ nav {
   transition: all 0.3s ease;
   text-decoration: none;
   font-size: 0.9rem;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #ff3366, #ff6b6b);
-  color: #fff;
-  border: none;
 }
 
 .btn-secondary {
@@ -135,4 +129,11 @@ nav {
   .hamburger.active div:nth-child(3) {
     transform: rotate(-45deg) translate(7px, -7px);
   }
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
 }

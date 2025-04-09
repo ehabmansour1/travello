@@ -20,17 +20,20 @@ import TourDetails from "./pages/TourDetails/TourDetails";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import LiveChat from "./pages/LiveChat/LiveChat";
 import UserProfile from "./pages/UserProfile/UserProfile";
+
 import HelpCenter from "./pages/HelpCenter/HelpCenter";
 
 
+import Blogs from "./pages/Blogs/Blogs";
+import Footer from "./components/Footer/Footer";
+import About from "./pages/About/About";
 
 const App = () => {
   return (
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/tours" element={<Tours />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/contact" element={<ContactUs />} />
@@ -44,12 +47,11 @@ const App = () => {
         <Route path="/payment" element={<Payment />} />
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/liveChat" element={<LiveChat />} />
-
-
-
+        <Route path="/blogs" element={<Blogs />} />
         <Route path="/booking" element={<Booking />} />
-          
+        <Route path="/about" element={<About />} />
       </Routes>
+      <Footer />
     </Router>
   );
 };

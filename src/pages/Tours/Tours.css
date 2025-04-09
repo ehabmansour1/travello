@@ -1,3 +1,15 @@
+.tours-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.tours-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
 /* New file for travel-specific styles */
 
 .hero-section {
@@ -850,7 +862,6 @@ footer {
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(5px);
-
 }
 
 .wishlist-btn:hover {
