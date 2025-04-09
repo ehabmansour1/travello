@@ -7,7 +7,8 @@ const blogs = [
     title: "Discover Hidden Gems in Europe",
     author: "John Doe",
     date: "March 21, 2025",
-    excerpt: "Europe is full of stunning destinations, but some gems are often overlooked. Let's uncover some secret spots...",
+    excerpt:
+      "Europe is full of stunning destinations, but some gems are often overlooked. Let's uncover some secret spots...",
     image: "https://via.placeholder.com/300",
     link: "/blog/1",
   },
@@ -16,7 +17,8 @@ const blogs = [
     title: "The Best Street Food in Asia",
     author: "Jane Smith",
     date: "March 15, 2025",
-    excerpt: "Street food in Asia is a whole experience. From savory snacks to sweet treats, here are the best ones to try...",
+    excerpt:
+      "Street food in Asia is a whole experience. From savory snacks to sweet treats, here are the best ones to try...",
     image: "https://via.placeholder.com/300",
     link: "/blog/2",
   },
@@ -25,7 +27,8 @@ const blogs = [
     title: "Top 10 Beaches to Visit in 2025",
     author: "Emily Johnson",
     date: "March 10, 2025",
-    excerpt: "Looking for the perfect beach getaway? Here are the top 10 beaches you should visit this year...",
+    excerpt:
+      "Looking for the perfect beach getaway? Here are the top 10 beaches you should visit this year...",
     image: "https://via.placeholder.com/300",
     link: "/blog/3",
   },
@@ -34,7 +37,8 @@ const blogs = [
     title: "Discover Hidden Gems in Europe",
     author: "John Doe",
     date: "March 21, 2025",
-    excerpt: "Europe is full of stunning destinations, but some gems are often overlooked. Let's uncover some secret spots...",
+    excerpt:
+      "Europe is full of stunning destinations, but some gems are often overlooked. Let's uncover some secret spots...",
     image: "https://via.placeholder.com/300",
     link: "/blog/1",
   },
@@ -43,7 +47,8 @@ const blogs = [
     title: "The Best Street Food in Asia",
     author: "Jane Smith",
     date: "March 15, 2025",
-    excerpt: "Street food in Asia is a whole experience. From savory snacks to sweet treats, here are the best ones to try...",
+    excerpt:
+      "Street food in Asia is a whole experience. From savory snacks to sweet treats, here are the best ones to try...",
     image: "https://via.placeholder.com/300",
     link: "/blog/2",
   },
@@ -52,7 +57,8 @@ const blogs = [
     title: "Top 10 Beaches to Visit in 2025",
     author: "Emily Johnson",
     date: "March 10, 2025",
-    excerpt: "Looking for the perfect beach getaway? Here are the top 10 beaches you should visit this year...",
+    excerpt:
+      "Looking for the perfect beach getaway? Here are the top 10 beaches you should visit this year...",
     image: "https://via.placeholder.com/300",
     link: "/blog/3",
   },
