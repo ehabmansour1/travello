@@ -20,6 +20,7 @@ import TourDetails from "./pages/TourDetails/TourDetails";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import LiveChat from "./pages/LiveChat/LiveChat";
 import UserProfile from "./pages/UserProfile/UserProfile";
+import HelpCenter from "./pages/HelpCenter/HelpCenter";
 
 
 
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/login" element={<Login />} />
         <Route path="/tours/:id" element={<TourDetails />} />
+        <Route path="/HelpCenter" element={<HelpCenter />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
