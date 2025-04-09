@@ -14,7 +14,27 @@ const AdminDashboard = () => {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    document.getElementById(tab)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const renderActiveTab = () => {
+    switch (activeTab) {
+      case "overview":
+        return <AdminOverview />;
+      case "bookings":
+        return <ManageBookings />;
+      case "users":
+        return <ManageUsers />;
+      case "tours":
+        return <ManageTours />;
+      case "blogs":
+        return <ManageBlogs />;
+      case "payments":
+        return <ManagePayments />;
+      case "analytics":
+        return <Analytics />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -105,37 +125,7 @@ const AdminDashboard = () => {
             </a>
           </nav>
         </aside>
-        <main className="admin-main">
-          <div
-            className={`admin-tab ${activeTab === "overview" ? "active" : ""}`}
-          >
-            {activeTab === "overview" && <AdminOverview />}
-          </div>
-          <div
-            className={`admin-tab ${activeTab === "bookings" ? "active" : ""}`}
-          >
-            {activeTab === "bookings" && <ManageBookings />}
-          </div>
-          <div className={`admin-tab ${activeTab === "users" ? "active" : ""}`}>
-            {activeTab === "users" && <ManageUsers />}
-          </div>
-          <div className={`admin-tab ${activeTab === "tours" ? "active" : ""}`}>
-            {activeTab === "tours" && <ManageTours />}
-          </div>
-          <div className={`admin-tab ${activeTab === "blogs" ? "active" : ""}`}>
-            {activeTab === "blogs" && <ManageBlogs />}
-          </div>
-          <div
-            className={`admin-tab ${activeTab === "payments" ? "active" : ""}`}
-          >
-            {activeTab === "payments" && <ManagePayments />}
-          </div>
-          <div
-            className={`admin-tab ${activeTab === "analytics" ? "active" : ""}`}
-          >
-            {activeTab === "analytics" && <Analytics />}
-          </div>
-        </main>
+        <main className="admin-main">{renderActiveTab()}</main>
       </div>
     </div>
   );

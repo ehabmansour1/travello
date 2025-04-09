@@ -235,23 +235,7 @@ const ManageBlogs = () => {
                     <label>Title</label>
                     <input type="text" className="form-input" required defaultValue={modalContent.post ? modalContent.post.title : ''} />
                   </div>
-                  <div className="form-group">
-                    <label>Category</label>
-                    <select className="form-input" required defaultValue={modalContent.post ? modalContent.post.category : 'destinations'}>
-                      <option value="destinations">Destinations</option>
-                      <option value="tips">Travel Tips</option>
-                      <option value="stories">Travel Stories</option>
-                      <option value="guides">Travel Guides</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Status</label>
-                    <select className="form-input" required defaultValue={modalContent.post ? modalContent.post.status : 'draft'}>
-                      <option value="draft">Draft</option>
-                      <option value="published">Published</option>
-                      <option value="scheduled">Scheduled</option>
-                    </select>
-                  </div>
+
                 </div>
                 <div className="form-group">
                   <label>Featured Image</label>
@@ -260,10 +244,6 @@ const ManageBlogs = () => {
                     <p>Drag and drop an image or click to upload</p>
                     <input type="file" accept="image/*" className="file-input" />
                   </div>
-                </div>
-                <div className="form-group">
-                  <label>Excerpt</label>
-                  <textarea className="form-input" rows="3" required defaultValue={modalContent.post ? modalContent.post.excerpt : ''}></textarea>
                 </div>
                 <div className="form-group">
                   <label>Content</label>

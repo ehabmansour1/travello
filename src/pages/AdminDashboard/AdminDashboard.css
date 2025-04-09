@@ -10,21 +10,26 @@
 }
 
 .admin-sidebar {
-  width: 350px;
-  background: rgba(255, 255, 255, 0.05);
+  min-width: 300px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
   padding: 2rem;
   backdrop-filter: blur(10px);
-  height: calc(105vh - 10px);
   position: sticky;
   top: 100px;
+  margin-top: 20px;
+  overflow: hidden;
+  z-index: 5;
+  height: fit-content;
+  min-height: 690px;
 }
 
 .admin-nav {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 1rem;
 }
 
 .user-info {
@@ -106,7 +111,7 @@
 /* Media Queries للتجاوب */
 @media (max-width: 1024px) {
   .admin-main {
-    padding: 300px 1rem 1rem 1rem;
+    padding: 1rem;
   }
   .admin-container {
     flex-direction: column;
@@ -115,12 +120,7 @@
     width: 100%;
     height: auto;
     position: static;
-    margin: 0 0 50px 0;
-  }
-  .admin-nav {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 1rem;
+    margin: 0 0 2rem 0;
   }
   .admin-nav a {
     white-space: nowrap;
@@ -132,15 +132,12 @@
 
 @media (max-width: 768px) {
   .admin-main {
-    padding: 300px 1rem 1rem 1rem;
+    padding: 1rem;
   }
   .admin-container {
     padding: 1rem;
   }
   .admin-sidebar {
-    width: 100%;
-    height: auto;
-    position: static;
-    margin: 0 0 50px 0;
+    margin: 0 0 2rem 0;
   }
 }
