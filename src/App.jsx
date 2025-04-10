@@ -27,6 +27,8 @@ import HelpCenter from "./pages/HelpCenter/HelpCenter";
 import Blogs from "./pages/Blogs/Blogs";
 import Footer from "./components/Footer/Footer";
 import About from "./pages/About/About";
+import TermsAndPrivacy from "./pages/TermsAndPrivacy/TeemsAndPrivacy";
+import NotFound from "./pages/NotFoundPage/NotFoundPage";
 
 const App = () => {
   return (
@@ -50,6 +52,10 @@ const App = () => {
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/about" element={<About />} />
+        <Route path="/Terms" element={<TermsAndPrivacy/>} />
+        <Route path="/NotFound" element={<NotFound/>} />
+
+
       </Routes>
       <Footer />
     </Router>
