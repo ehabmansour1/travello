@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useFirebase } from "../../contexts/FirebaseContext";
+import Swal from "sweetalert2";
 import "./Login.css";
 
 const Login = () => {
@@ -7,6 +9,10 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { login, getUserData } = useFirebase();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,10 +22,33 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login form submitted:", formData);
+    setError("");
+    setLoading(true);
+
+    try {
+      const userCredential = await login(formData.email, formData.password);
+      const userData = await getUserData(userCredential.uid);
+      const userRole = userData?.role || "user";
+
+      Swal.fire({
+        title: "Success!",
+        text: "You have successfully logged in.",
+        icon: "success",
+        confirmButtonText: "Continue",
+      }).then(() => {
+        if (userRole === "admin") {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/user-dashboard");
+        }
+      });
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -27,6 +56,8 @@ const Login = () => {
       <div className="login-content">
         <h1>Welcome Back</h1>
         <p>Please enter your details to sign in</p>
+
+        {error && <div className="error-message">{error}</div>}
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
@@ -57,8 +88,12 @@ const Login = () => {
             />
           </div>
 
-          <button type="submit" className="btn-primary login-btn">
-            Sign In
+          <button
+            type="submit"
+            className="btn-primary login-btn"
+            disabled={loading}
+          >
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
