@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useFirebase } from "../../contexts/FirebaseContext";
+import Swal from "sweetalert2";
 import "./Register.css";
 
 const Register = () => {
@@ -10,6 +12,10 @@ const Register = () => {
     password: "",
     confirmPassword: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { signup } = useFirebase();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,10 +25,39 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle registration logic here
-    console.log("Register form submitted:", formData);
+    setError("");
+    setLoading(true);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { name, username, email, password } = formData;
+      await signup(email, password, {
+        name,
+        username,
+        role: "user",
+        createdAt: new Date().toISOString(),
+      });
+
+      Swal.fire({
+        title: "Success!",
+        text: "Your account has been created successfully.",
+        icon: "success",
+        confirmButtonText: "Continue",
+      }).then(() => {
+        navigate("/user-dashboard");
+      });
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,6 +65,8 @@ const Register = () => {
       <div className="login-content">
         <h1>Create Account</h1>
         <p>Please fill in your details to register</p>
+
+        {error && <div className="error-message">{error}</div>}
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
@@ -102,8 +139,12 @@ const Register = () => {
             />
           </div>
 
-          <button type="submit" className="btn-primary login-btn">
-            Create Account
+          <button
+            type="submit"
+            className="btn-primary login-btn"
+            disabled={loading}
+          >
+            {loading ? "Creating account..." : "Register"}
           </button>
         </form>
 
@@ -111,7 +152,7 @@ const Register = () => {
           <p>
             Already have an account?{" "}
             <Link to="/login" className="register-link">
-              Login here
+              Sign in
             </Link>
           </p>
         </div>
