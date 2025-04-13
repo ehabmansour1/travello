@@ -1,70 +1,42 @@
-import React from "react";
-import styles from "./Blogs.module.css"; // استيراد CSS Module
-
-const blogs = [
-  {
-    id: 1,
-    title: "Discover Hidden Gems in Europe",
-    author: "John Doe",
-    date: "March 21, 2025",
-    excerpt:
-      "Europe is full of stunning destinations, but some gems are often overlooked. Let's uncover some secret spots...",
-    image: "https://via.placeholder.com/300",
-    link: "/blog/1",
-  },
-  {
-    id: 2,
-    title: "The Best Street Food in Asia",
-    author: "Jane Smith",
-    date: "March 15, 2025",
-    excerpt:
-      "Street food in Asia is a whole experience. From savory snacks to sweet treats, here are the best ones to try...",
-    image: "https://via.placeholder.com/300",
-    link: "/blog/2",
-  },
-  {
-    id: 3,
-    title: "Top 10 Beaches to Visit in 2025",
-    author: "Emily Johnson",
-    date: "March 10, 2025",
-    excerpt:
-      "Looking for the perfect beach getaway? Here are the top 10 beaches you should visit this year...",
-    image: "https://via.placeholder.com/300",
-    link: "/blog/3",
-  },
-  {
-    id: 4,
-    title: "Discover Hidden Gems in Europe",
-    author: "John Doe",
-    date: "March 21, 2025",
-    excerpt:
-      "Europe is full of stunning destinations, but some gems are often overlooked. Let's uncover some secret spots...",
-    image: "https://via.placeholder.com/300",
-    link: "/blog/1",
-  },
-  {
-    id: 5,
-    title: "The Best Street Food in Asia",
-    author: "Jane Smith",
-    date: "March 15, 2025",
-    excerpt:
-      "Street food in Asia is a whole experience. From savory snacks to sweet treats, here are the best ones to try...",
-    image: "https://via.placeholder.com/300",
-    link: "/blog/2",
-  },
-  {
-    id: 6,
-    title: "Top 10 Beaches to Visit in 2025",
-    author: "Emily Johnson",
-    date: "March 10, 2025",
-    excerpt:
-      "Looking for the perfect beach getaway? Here are the top 10 beaches you should visit this year...",
-    image: "https://via.placeholder.com/300",
-    link: "/blog/3",
-  },
-];
+import React, { useState, useEffect } from "react";
+import styles from "./Blogs.module.css";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const Blogs = () => {
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const blogsCollection = collection(db, "blogs");
+        const blogSnapshot = await getDocs(blogsCollection);
+        const blogList = blogSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setBlogs(blogList);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className={styles.background}>
+        <div className={styles["blog-container"]}>
+          <div className="loading">Loading blogs...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.background}>
       <div className={styles["gradient-sphere"]}></div>
@@ -88,13 +60,19 @@ const Blogs = () => {
                   <span className={styles.date}>{blog.date}</span>
                 </p>
                 <p className={styles["blog-excerpt"]}>{blog.excerpt}</p>
-                <a href={blog.link} className={styles["read-more"]}>
+                <a href={`/blog/${blog.id}`} className={styles["read-more"]}>
                   Read More
                 </a>
               </div>
             </div>
           ))}
         </div>
+
+        {blogs.length === 0 && (
+          <div className={styles["no-blogs"]}>
+            <p>No blogs found.</p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -10,8 +10,37 @@ import "./Home.css";
 import { Link } from "react-router-dom";
 import PaymentPage from "../Payment/Payment";
 import Payment from "../Payment/Payment";
-import { collection, getDocs, query, limit, where } from "firebase/firestore";
-import { db } from "../../firebase";
+
+// Tour data
+const tours = [
+  {
+    id: 1,
+    title: "Majestic Switzerland",
+    image: "https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b",
+    price: 2499,
+    rating: 4.9,
+    duration: "7 days",
+    description: "Experience the breathtaking Alps and pristine lakes",
+  },
+  {
+    id: 2,
+    title: "Thailand Paradise",
+    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a",
+    price: 1899,
+    rating: 4.8,
+    duration: "10 days",
+    description: "Explore exotic beaches and ancient temples",
+  },
+  {
+    id: 3,
+    title: "Italian Dream",
+    image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9",
+    price: 2199,
+    rating: 4.9,
+    duration: "8 days",
+    description: "Discover art, history, and amazing cuisine",
+  },
+];
 
 // Testimonials data
 const testimonials = [
@@ -54,30 +83,6 @@ const Home = () => {
     guests: "2 Adults",
   });
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [tours, setTours] = useState([]);
-
-  useEffect(() => {
-    const fetchTours = async () => {
-      try {
-        const toursRef = collection(db, "tours");
-        const q = query(
-          toursRef,
-          where("status", "==", "active"),
-          limit(3)
-        );
-        const tourSnapshot = await getDocs(q);
-        const tourList = tourSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setTours(tourList);
-      } catch (error) {
-        console.error("Error fetching tours:", error);
-      }
-    };
-
-    fetchTours();
-  }, []);
 
   useEffect(() => {
     const testimonialInterval = setInterval(() => {
