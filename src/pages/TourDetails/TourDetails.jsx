@@ -1,75 +1,95 @@
-import React, { useState } from "react";
-// import { useParams } from "react-router-dom"; // Removed unused import
-import styles from "./TourDetails.module.css"; // استيراد كـ module
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import styles from "./TourDetails.module.css";
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import Swal from 'sweetalert2';
 
 const TourDetails = () => {
-  const [mainImage, setMainImage] = useState(
-    "https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b"
-  );
-  const [activeThumbnail, setActiveThumbnail] = useState(0);
-  const [quantity, setQuantity] = useState(2);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [tour, setTour] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
 
-  // const { id } = useParams(); // Removed unused id
+  useEffect(() => {
+    const fetchTour = async () => {
+      try {
+        const tourDoc = doc(db, "tours", id);
+        const tourSnap = await getDoc(tourDoc);
+        
+        if (tourSnap.exists()) {
+          setTour({ id: tourSnap.id, ...tourSnap.data() });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Tour Not Found',
+            text: 'The tour you are looking for does not exist.',
+          }).then(() => {
+            navigate('/tours');
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching tour:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to load tour details. Please try again.',
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const thumbnails = [
-    "https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b",
-    "https://images.unsplash.com/photo-1565557623262-b51c2513a641",
-  ];
+    fetchTour();
+  }, [id, navigate]);
 
-  const pricePerPerson = 2499;
-  const taxRate = 199;
+  if (loading) {
+    return (
+      <div className={styles["tour-details-container"]}>
+        <div className={styles.loading}>Loading tour details...</div>
+      </div>
+    );
+  }
 
-  const handleThumbnailClick = (src, index) => {
-    setMainImage(src);
-    setActiveThumbnail(index);
-  };
+  if (!tour) {
+    return null;
+  }
 
-  const updateTotal = () => {
-    const subtotal = pricePerPerson * quantity; // Keep subtotal for calculation
+  const calculateTotal = () => {
+    const subtotal = tour.price * quantity;
+    const taxRate = Math.round(subtotal * 0.1); // 10% tax
     const total = subtotal + taxRate;
-    // Removed unused subtotal from return
-    return { total };
+    return { subtotal, taxRate, total };
   };
 
-  // Removed unused subtotal
-  const { total } = updateTotal();
+  const { subtotal, taxRate, total } = calculateTotal();
 
   return (
     <div className={styles["tour-details-container"]}>
       <div className={styles["tour-details-header"]}>
         <button
           className={styles["btn-back"]}
-          onClick={() => window.history.back()}
+          onClick={() => navigate('/tours')}
         >
           <i className="fas fa-arrow-left"></i> Back to Tours
         </button>
-        <h1>Majestic Switzerland</h1>
+        <h1>{tour.title}</h1>
         <div className={styles["tour-meta"]}>
           <div className={styles["tour-rating"]}>
             <span>★★★★★</span>
-            <span>(4.9)</span>
+            <span>({tour.rating || '0'})</span>
           </div>
           <div className={styles["tour-location"]}>
             <i className="fas fa-map-marker-alt"></i>
-            <span>Zurich • Lucerne • Interlaken • Zermatt</span>
+            <span>{tour.location || 'Location not specified'}</span>
           </div>
         </div>
       </div>
 
       <div className={styles["tour-gallery"]}>
         <div className={styles["gallery-main"]}>
-          <img src={mainImage} alt="Main Tour" />
-        </div>
-        <div className={styles["gallery-thumbnails"]}>
-          {thumbnails.map((thumb, index) => (
-            <img
-              key={index}
-              src={thumb}
-              alt={`Thumbnail ${index + 1}`}
-              className={activeThumbnail === index ? styles["active"] : ""}
-              onClick={() => handleThumbnailClick(thumb, index)}
-            />
-          ))}
+          <img src={tour.image} alt={tour.title} />
         </div>
       </div>
 
@@ -77,50 +97,31 @@ const TourDetails = () => {
         <div className={styles["tour-main-content"]}>
           <section className={styles["tour-section"]}>
             <h2>Tour Overview</h2>
-            <p>
-              Experience the breathtaking beauty of Switzerland on this 7-day
-              adventure through the heart of the Alps. From pristine lakes to
-              snow-capped peaks, immerse yourself in the natural wonders and
-              cultural richness of this amazing country.
-            </p>
+            <p>{tour.description}</p>
           </section>
 
           <section className={styles["tour-section"]}>
-            <h2>Itinerary</h2>
-            <div className={styles["itinerary-timeline"]}>
-              <div className={styles["timeline-item"]}>
-                <div className={styles["day-badge"]}>Day 1</div>
-                <div className={styles["timeline-content"]}>
-                  <h3>Arrival in Zurich</h3>
-                  <p>
-                    Welcome meeting, city orientation walk, and welcome dinner
-                  </p>
-                  <div className={styles["included-items"]}>
-                    <span className={styles["included-item"]}>
-                      <i className="fas fa-utensils"></i> Dinner
-                    </span>
-                    <span className={styles["included-item"]}>
-                      <i className="fas fa-hotel"></i> Hotel
-                    </span>
-                  </div>
-                </div>
+            <h2>Tour Details</h2>
+            <div className={styles["tour-highlights"]}>
+              <div className={styles["highlight-item"]}>
+                <i className="fas fa-clock"></i>
+                <h3>Duration</h3>
+                <p>{tour.duration} days</p>
               </div>
-              <div className={styles["timeline-item"]}>
-                <div className={styles["day-badge"]}>Day 2</div>
-                <div className={styles["timeline-content"]}>
-                  <h3>Lucerne Explorer</h3>
-                  <p>
-                    Chapel Bridge, Lion Monument, Lake cruise, and free time
-                  </p>
-                  <div className={styles["included-items"]}>
-                    <span className={styles["included-item"]}>
-                      <i className="fas fa-utensils"></i> Breakfast
-                    </span>
-                    <span className={styles["included-item"]}>
-                      <i className="fas fa-hotel"></i> Hotel
-                    </span>
-                  </div>
-                </div>
+              <div className={styles["highlight-item"]}>
+                <i className="fas fa-users"></i>
+                <h3>Group Size</h3>
+                <p>Max {tour.maxGroupSize} people</p>
+              </div>
+              <div className={styles["highlight-item"]}>
+                <i className="fas fa-mountain"></i>
+                <h3>Category</h3>
+                <p>{tour.category}</p>
+              </div>
+              <div className={styles["highlight-item"]}>
+                <i className="fas fa-signal"></i>
+                <h3>Difficulty</h3>
+                <p>{tour.difficulty}</p>
               </div>
             </div>
           </section>
@@ -132,7 +133,7 @@ const TourDetails = () => {
                 <h3>Accommodation</h3>
                 <ul>
                   <li>
-                    <i className="fas fa-check"></i> 6 nights in 4-star hotels
+                    <i className="fas fa-check"></i> Hotel accommodation
                   </li>
                   <li>
                     <i className="fas fa-check"></i> Breakfast included daily
@@ -146,7 +147,7 @@ const TourDetails = () => {
                     <i className="fas fa-check"></i> Airport transfers
                   </li>
                   <li>
-                    <i className="fas fa-check"></i> Swiss Travel Pass
+                    <i className="fas fa-check"></i> Local transportation
                   </li>
                 </ul>
               </div>
@@ -154,10 +155,10 @@ const TourDetails = () => {
                 <h3>Activities</h3>
                 <ul>
                   <li>
-                    <i className="fas fa-check"></i> Guided city tours
+                    <i className="fas fa-check"></i> Guided tours
                   </li>
                   <li>
-                    <i className="fas fa-check"></i> Mountain excursions
+                    <i className="fas fa-check"></i> Entry fees
                   </li>
                 </ul>
               </div>
@@ -168,19 +169,8 @@ const TourDetails = () => {
         <div className={styles["tour-sidebar"]}>
           <div className={styles["booking-card"]}>
             <div className={styles["booking-price"]}>
-              <span className={styles["price-amount"]}>${pricePerPerson}</span>
+              <span className={styles["price-amount"]}>${tour.price}</span>
               <span className={styles["price-per"]}>per person</span>
-            </div>
-
-            <div className={styles["booking-dates"]}>
-              <h4>Available Dates</h4>
-              <div className={styles["date-selector"]}>
-                <select className={styles["form-input"]}>
-                  <option>June 15, 2024</option>
-                  <option>July 1, 2024</option>
-                  <option>July 15, 2024</option>
-                </select>
-              </div>
             </div>
 
             <div className={styles["booking-guests"]}>
@@ -197,12 +187,12 @@ const TourDetails = () => {
                   className={styles["quantity-input"]}
                   value={quantity}
                   min="1"
-                  max="15"
+                  max={tour.maxGroupSize}
                   readOnly
                 />
                 <button
                   className={styles["quantity-btn"]}
-                  onClick={() => setQuantity((prev) => Math.min(15, prev + 1))}
+                  onClick={() => setQuantity((prev) => Math.min(tour.maxGroupSize, prev + 1))}
                 >
                   +
                 </button>
@@ -213,7 +203,7 @@ const TourDetails = () => {
               <div className={styles["total-row"]}>
                 <span>Tour Price</span>
                 <span>
-                  ${pricePerPerson} × {quantity}
+                  ${tour.price} × {quantity} = ${subtotal}
                 </span>
               </div>
               <div className={styles["total-row"]}>
@@ -228,7 +218,7 @@ const TourDetails = () => {
 
             <button
               className={styles["btn-primary"]}
-              onClick={() => alert("Booking functionality coming soon!")}
+              onClick={() => navigate(`/booking/${tour.id}`)}
             >
               Book Now
             </button>
