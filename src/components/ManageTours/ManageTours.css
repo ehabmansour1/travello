@@ -36,7 +36,7 @@
 
 .tours-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr);  /* Changed to show exactly 2 columns */
   gap: 1.5rem;
   width: 100%;
 }

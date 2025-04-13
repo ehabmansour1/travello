@@ -1,53 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToWishlist,
   removeFromWishlist,
-  selectIsInWishlist,
 } from "../../store/slices/wishlistSlice";
 import "./Tours.css";
 import { Link } from "react-router-dom";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const Tours = () => {
   const [activeTab, setActiveTab] = useState("all");
+  const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const wishlistState = useSelector((state) => state.wishlist);
 
-  const tours = [
-    {
-      id: 3,
-      name: "Swiss Alps",
-      location: "Switzerland",
-      price: 2500,
-      duration: "6 days",
-      rating: 4.7,
-      image:
-        "https://images.unsplash.com/photo-1517299321609-52687d1bc55a?q=80&w=1000&auto=format&fit=crop",
-      category: "adventure",
-    },
-    {
-      id: 4,
-      name: "Tokyo City",
-      location: "Japan",
-      price: 1800,
-      duration: "8 days",
-      rating: 4.9,
-      image:
-        "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1000&auto=format&fit=crop",
-      category: "cultural",
-    },
-    {
-      id: 6,
-      name: "Machu Picchu",
-      location: "Peru",
-      price: 2200,
-      duration: "7 days",
-      rating: 4.9,
-      image:
-        "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=1000&auto=format&fit=crop",
-      category: "historical",
-    },
-  ];
+  // Fetch tours from Firestore
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const toursCollection = collection(db, "tours");
+        const tourSnapshot = await getDocs(toursCollection);
+        const tourList = tourSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setTours(tourList);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching tours:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchTours();
+  }, []);
 
   const handleWishlistToggle = (tour) => {
     const isInWishlist = wishlistState.items.some(
@@ -64,6 +52,14 @@ const Tours = () => {
     activeTab === "all"
       ? tours
       : tours.filter((tour) => tour.category === activeTab);
+
+  if (loading) {
+    return (
+      <div className="tours-page">
+        <div className="loading">Loading tours...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="tours-page">
@@ -92,10 +88,16 @@ const Tours = () => {
           Cultural
         </button>
         <button
-          className={`filter-btn ${activeTab === "historical" ? "active" : ""}`}
-          onClick={() => setActiveTab("historical")}
+          className={`filter-btn ${activeTab === "beach" ? "active" : ""}`}
+          onClick={() => setActiveTab("beach")}
         >
-          Historical
+          Beach
+        </button>
+        <button
+          className={`filter-btn ${activeTab === "mountain" ? "active" : ""}`}
+          onClick={() => setActiveTab("mountain")}
+        >
+          Mountain
         </button>
       </div>
 
@@ -118,20 +120,20 @@ const Tours = () => {
                 </button>
               </div>
               <div className="tour-content">
-                <h3>{tour.name}</h3>
+                <h3>{tour.title}</h3>
                 <div className="tour-location">
                   <i className="fas fa-map-marker-alt"></i>
-                  {tour.location}
+                  {tour.location || 'Location not specified'}
                 </div>
                 <div className="tour-rating">
                   <i className="fas fa-star"></i>
-                  {tour.rating}
+                  {tour.rating || 0}
                 </div>
                 <div className="tour-details">
                   <span className="tour-price">${tour.price}</span>
-                  <span className="tour-duration">{tour.duration}</span>
+                  <span className="tour-duration">{tour.duration} days</span>
                 </div>
-                <Link to={`/tours/${tours.id}`} className="btn-primary">
+                <Link to={`/tours/${tour.id}`} className="btn-primary">
                   View Details
                 </Link>
               </div>
@@ -139,6 +141,12 @@ const Tours = () => {
           );
         })}
       </div>
+      
+      {filteredTours.length === 0 && (
+        <div className="no-tours">
+          <p>No tours found in this category.</p>
+        </div>
+      )}
     </div>
   );
 };
