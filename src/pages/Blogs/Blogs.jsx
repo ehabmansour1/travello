@@ -68,7 +68,7 @@ const Blogs = () => {
                     <span key={index} className={styles.tag}>#{tag}</span>
                   ))}
                 </div>
-                <Link to={`/blog/${blog.id}`} className={styles["read-more"]}>
+                <Link to={`/blogs/${blog.id}`} className={styles["read-more"]}>
                   Read More
                 </Link>
               </div>

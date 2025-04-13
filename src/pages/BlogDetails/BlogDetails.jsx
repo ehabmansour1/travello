@@ -1,39 +1,96 @@
-import React from 'react';
-import styles from './ArticleDetails.module.css';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import styles from './BlogDetails.module.css';
 
-const BlogsDetails = () => {
+const BlogDetails = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [blog, setBlog] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBlog = async () => {
+      try {
+        const blogRef = doc(db, 'blogs', id);
+        const blogSnap = await getDoc(blogRef);
+        
+        if (blogSnap.exists()) {
+          setBlog({
+            id: blogSnap.id,
+            ...blogSnap.data(),
+            publishDate: blogSnap.data().publishDate?.toDate() || new Date()
+          });
+        } else {
+          console.log('No such blog!');
+          navigate('/blogs');
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching blog:', error);
+        setLoading(false);
+        navigate('/blogs');
+      }
+    };
+
+    fetchBlog();
+  }, [id, navigate]);
+
+  if (loading) {
+    return (
+      <div className={styles.detailsContainer}>
+        <div className="loading">Loading blog...</div>
+      </div>
+    );
+  }
+
+  if (!blog) {
+    return (
+      <div className={styles.detailsContainer}>
+        <div className={styles.error}>Blog not found</div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.detailsContainer}>
       <div className={styles.header}>
-        <h1>Exploring the Hidden Gems of Egypt 🏜️</h1>
-        <p>By Mahmoud Makady | April 8, 2025</p>
+        <h1>{blog.title}</h1>
+        <p>By {blog.author.name} | {blog.publishDate.toLocaleDateString()}</p>
+        <div className={styles.tags}>
+          {blog.tags?.map((tag, index) => (
+            <span key={index} className={styles.tag}>#{tag}</span>
+          ))}
+        </div>
       </div>
       
       <img
-        src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
-        alt="Egyptian Desert"
+        src={blog.featuredImage}
+        alt={blog.title}
         className={styles.image}
       />
 
       <div className={styles.content}>
-        <p>
-          Egypt is not just about the pyramids and the Nile. There are countless hidden gems across the country waiting to be explored.
-          From the serene oases in the Western Desert to the stunning beaches of the Red Sea, Egypt has a lot to offer adventurous travelers.
-        </p>
-        <p>
-          Dive into the rich history of Alexandria, hike the trails of Sinai, or relax in the tranquil setting of Siwa Oasis. 
-          Each destination offers a unique experience that blends natural beauty with cultural heritage.
-        </p>
-        <p>
-          Don't forget to try local cuisines, engage with local communities, and capture the breathtaking landscapes through your lens!
-        </p>
+        <p className={styles.excerpt}>{blog.excerpt}</p>
+        {blog.content.split('\n').map((paragraph, index) => (
+          <p key={index}>{paragraph}</p>
+        ))}
       </div>
 
-      <button className={styles.backButton} onClick={() => window.history.back()}>
-        🔙 Back to Articles
+      <div className={styles.meta}>
+        <div className={styles.stats}>
+          <span><i className="fas fa-eye"></i> {blog.views || 0} views</span>
+          <span><i className="fas fa-share-alt"></i> {blog.shares || 0} shares</span>
+          <span><i className="fas fa-comment"></i> {blog.comments || 0} comments</span>
+        </div>
+      </div>
+
+      <button className={styles.backButton} onClick={() => navigate('/blogs')}>
+        <i className="fas fa-arrow-left"></i> Back to Articles
       </button>
     </div>
   );
 };
 
-export default BlogsDetails;
+export default BlogDetails;
