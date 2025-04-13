@@ -31,6 +31,7 @@ import Footer from "./components/Footer/Footer";
 import About from "./pages/About/About";
 import TermsAndPrivacy from "./pages/TermsAndPrivacy/TeemsAndPrivacy";
 import NotFound from "./pages/NotFoundPage/NotFoundPage";
+import BlogDetails from "./pages/BlogDetails/BlogDetails";
 
 const App = () => {
   return (
@@ -60,6 +61,7 @@ const App = () => {
           <Route path="/userProfile" element={<UserProfile />} />
           <Route path="/liveChat" element={<LiveChat />} />
           <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs/:id" element={<BlogDetails />} />
           <Route path="/booking" element={<Booking />} />
           <Route path="/about" element={<About />} />
           <Route path="/Terms" element={<TermsAndPrivacy />} />

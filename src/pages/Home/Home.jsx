@@ -8,39 +8,8 @@ import Footer from "../../components/Footer/Footer";
 import ChatWidget from "../../components/ChatWidget/ChatWidget";
 import "./Home.css";
 import { Link } from "react-router-dom";
-import PaymentPage from "../Payment/Payment";
-import Payment from "../Payment/Payment";
-
-// Tour data
-const tours = [
-  {
-    id: 1,
-    title: "Majestic Switzerland",
-    image: "https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b",
-    price: 2499,
-    rating: 4.9,
-    duration: "7 days",
-    description: "Experience the breathtaking Alps and pristine lakes",
-  },
-  {
-    id: 2,
-    title: "Thailand Paradise",
-    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a",
-    price: 1899,
-    rating: 4.8,
-    duration: "10 days",
-    description: "Explore exotic beaches and ancient temples",
-  },
-  {
-    id: 3,
-    title: "Italian Dream",
-    image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9",
-    price: 2199,
-    rating: 4.9,
-    duration: "8 days",
-    description: "Discover art, history, and amazing cuisine",
-  },
-];
+import { collection, getDocs, query, limit } from "firebase/firestore";
+import { db } from "../../firebase";
 
 // Testimonials data
 const testimonials = [
@@ -60,22 +29,6 @@ const testimonials = [
   },
 ];
 
-// Blog posts data
-const blogPosts = [
-  {
-    id: 1,
-    title: "10 Hidden Gems in Europe",
-    image: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b",
-    excerpt: "Discover unexplored destinations off the beaten path...",
-  },
-  {
-    id: 2,
-    title: "Travel Photography Tips",
-    image: "https://images.unsplash.com/photo-1452796907770-ad6cd374b12d",
-    excerpt: "Master the art of capturing your adventures...",
-  },
-];
-
 const Home = () => {
   const [searchData, setSearchData] = useState({
     destination: "",
@@ -83,6 +36,29 @@ const Home = () => {
     guests: "2 Adults",
   });
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [tours, setTours] = useState([]);
+  const [setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const toursCollection = collection(db, "tours");
+        const q = query(toursCollection, limit(3));
+        const tourSnapshot = await getDocs(q);
+        const tourList = tourSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setTours(tourList);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching tours:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchTours();
+  }, []);
 
   useEffect(() => {
     const testimonialInterval = setInterval(() => {
@@ -102,7 +78,6 @@ const Home = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // Handle search logic here
     console.log("Search data:", searchData);
   };
 
@@ -122,9 +97,8 @@ const Home = () => {
         testimonials={testimonials}
         currentTestimonial={currentTestimonial}
       />
-      <BlogSection blogPosts={blogPosts} />
+      <BlogSection />
       <ChatWidget />
-
     </div>
   );
 };

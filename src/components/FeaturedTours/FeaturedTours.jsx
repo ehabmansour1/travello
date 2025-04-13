@@ -1,10 +1,9 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToWishlist,
   removeFromWishlist,
-  selectIsInWishlist,
 } from "../../store/slices/wishlistSlice";
 import "./FeaturedTours.css";
 
@@ -30,7 +29,7 @@ const FeaturedTours = ({ tours }) => {
         <p>Curated experiences for unforgettable journeys</p>
       </div>
 
-      <div className="tours-grid">
+      <div className="home-tours-grid">
         {tours.map((tour) => {
           const isInWishlist = wishlistState.items.some(
             (item) => item.id === tour.id
