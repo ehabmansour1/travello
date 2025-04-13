@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./Blogs.module.css";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
+import { Link } from "react-router-dom";
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -51,18 +52,25 @@ const Blogs = () => {
           {blogs.map((blog) => (
             <div className={styles["blog-item"]} key={blog.id}>
               <div className={styles["blog-thumbnail"]}>
-                <img src={blog.image} alt={blog.title} />
+                <img src={blog.featuredImage} alt={blog.title} />
               </div>
               <div className={styles["blog-content"]}>
                 <h2 className={styles["blog-title"]}>{blog.title}</h2>
                 <p className={styles["blog-meta"]}>
-                  <span className={styles.author}>By {blog.author}</span> |{" "}
-                  <span className={styles.date}>{blog.date}</span>
+                  <span className={styles.author}>By {blog.author.name}</span> |{" "}
+                  <span className={styles.date}>
+                    {blog.publishDate ? new Date(blog.publishDate.seconds * 1000).toLocaleDateString() : "Date not available"}
+                  </span>
                 </p>
                 <p className={styles["blog-excerpt"]}>{blog.excerpt}</p>
-                <a href={`/blog/${blog.id}`} className={styles["read-more"]}>
+                <div className={styles["blog-tags"]}>
+                  {blog.tags?.map((tag, index) => (
+                    <span key={index} className={styles.tag}>#{tag}</span>
+                  ))}
+                </div>
+                <Link to={`/blog/${blog.id}`} className={styles["read-more"]}>
                   Read More
-                </a>
+                </Link>
               </div>
             </div>
           ))}
