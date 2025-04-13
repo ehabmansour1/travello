@@ -1,73 +1,229 @@
 import React, { useState, useEffect } from "react";
 import "./ManageTours.css";
-
-// بيانات عينة للجولات
-const sampleTours = [
-  {
-    id: 1,
-    title: "Majestic Switzerland",
-    image: "https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b",
-    category: "mountain",
-    price: 2499,
-    duration: "7 days",
-    maxGroupSize: 15,
-    difficulty: "moderate",
-    status: "active",
-    bookings: 24,
-    rating: 4.9,
-    description:
-      "Experience the breathtaking beauty of Switzerland on this 7-day adventure through the heart of the Alps.",
-    dates: [
-      { date: "2024-06-15", price: 2499, spotsLeft: 8 },
-      { date: "2024-07-01", price: 2699, spotsLeft: 12 },
-    ],
-  },
-  // يمكنك إضافة المزيد من الجولات هنا
-];
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import Swal from 'sweetalert2';
 
 const ManageTours = () => {
-  const [tours] = useState(sampleTours);
-  const [filteredTours, setFilteredTours] = useState(sampleTours);
+  const [tours, setTours] = useState([]);
+  const [filteredTours, setFilteredTours] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingTour, setEditingTour] = useState(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    category: "adventure",
+    price: "",
+    duration: "",
+    maxGroupSize: "",
+    difficulty: "easy",
+    description: "",
+    image: "",
+    status: "active",
+  });
 
-  // Effect to control body scroll when modal is open/closed
+  // Fetch tours from Firestore
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const toursCollection = collection(db, "tours");
+        const tourSnapshot = await getDocs(toursCollection);
+        const tourList = tourSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setTours(tourList);
+        setFilteredTours(tourList);
+      } catch (error) {
+        console.error("Error fetching tours:", error);
+      }
+    };
+
+    fetchTours();
+  }, []);
+
   useEffect(() => {
     if (showAddModal) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = ""; // Restore default overflow
+      document.body.style.overflow = "";
     }
-
-    // Cleanup function to restore scroll when component unmounts
     return () => {
       document.body.style.overflow = "";
     };
-  }, [showAddModal]); // Re-run effect when showAddModal changes
+  }, [showAddModal]);
 
-  // تصفية الجولات عند تغيير معطيات البحث أو الفلاتر
   useEffect(() => {
     filterTours();
   }, [searchTerm, categoryFilter, statusFilter, tours]);
 
   const filterTours = () => {
     const filtered = tours.filter((tour) => {
-      const matchesSearch = tour.title
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        categoryFilter === "all" || tour.category === categoryFilter;
-      const matchesStatus =
-        statusFilter === "all" || tour.status === statusFilter;
+      const matchesSearch = tour.title?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = categoryFilter === "all" || tour.category === categoryFilter;
+      const matchesStatus = statusFilter === "all" || tour.status === statusFilter;
       return matchesSearch && matchesCategory && matchesStatus;
     });
     setFilteredTours(filtered);
   };
 
-  const handleAddTourModal = () => setShowAddModal(true);
-  const handleCloseModal = () => setShowAddModal(false);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleAddTourModal = () => {
+    setEditingTour(null);
+    setFormData({
+      title: "",
+      category: "adventure",
+      price: "",
+      duration: "",
+      maxGroupSize: "",
+      difficulty: "easy",
+      description: "",
+      image: "",
+      status: "active",
+    });
+    setShowAddModal(true);
+  };
+
+  const handleEditTour = (tour) => {
+    setEditingTour(tour);
+    setFormData({
+      title: tour.title,
+      category: tour.category,
+      price: tour.price,
+      duration: tour.duration,
+      maxGroupSize: tour.maxGroupSize,
+      difficulty: tour.difficulty,
+      description: tour.description,
+      image: tour.image,
+      status: tour.status,
+    });
+    setShowAddModal(true);
+  };
+
+  const handleDeleteTour = async (tourId) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to delete this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteDoc(doc(db, "tours", tourId));
+        setTours(tours.filter(tour => tour.id !== tourId));
+        Swal.fire(
+          'Deleted!',
+          'Tour has been deleted.',
+          'success'
+        );
+      } catch (error) {
+        console.error("Error deleting tour:", error);
+        Swal.fire(
+          'Error!',
+          'Failed to delete tour.',
+          'error'
+        );
+      }
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingTour) {
+        // Update existing tour
+        const tourRef = doc(db, "tours", editingTour.id);
+        await updateDoc(tourRef, {
+          ...formData,
+          price: Number(formData.price),
+          maxGroupSize: Number(formData.maxGroupSize),
+          duration: Number(formData.duration),
+          bookings: editingTour.bookings || 0,
+          rating: editingTour.rating || 0,
+        });
+
+        setTours(tours.map(tour => 
+          tour.id === editingTour.id ? { ...tour, ...formData } : tour
+        ));
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Tour updated successfully',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } else {
+        // Add new tour
+        const toursCollection = collection(db, "tours");
+        const docRef = await addDoc(toursCollection, {
+          ...formData,
+          price: Number(formData.price),
+          maxGroupSize: Number(formData.maxGroupSize),
+          duration: Number(formData.duration),
+          bookings: 0,
+          rating: 0,
+          dates: [],
+        });
+
+        const newTour = {
+          id: docRef.id,
+          ...formData,
+          bookings: 0,
+          rating: 0,
+          dates: [],
+        };
+
+        setTours([...tours, newTour]);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'New tour added successfully',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error saving tour:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Failed to save tour. Please try again.',
+      });
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowAddModal(false);
+    setEditingTour(null);
+    setFormData({
+      title: "",
+      category: "adventure",
+      price: "",
+      duration: "",
+      maxGroupSize: "",
+      difficulty: "easy",
+      description: "",
+      image: "",
+      status: "active",
+    });
+  };
 
   return (
     <section id="tours" className="admin-tab active">
@@ -122,17 +278,17 @@ const ManageTours = () => {
             </div>
             <div className="tour-content">
               <h3>{tour.title}</h3>
-              <p>{tour.description.substring(0, 100)}...</p>
+              <p>{tour.description?.substring(0, 100)}...</p>
               <div className="tour-meta">
                 <div className="tour-price">${tour.price}</div>
                 <div className="tour-stats">
                   <div className="stat-item">
                     <i className="fas fa-users"></i>
-                    <span>{tour.bookings} bookings</span>
+                    <span>{tour.bookings || 0} bookings</span>
                   </div>
                   <div className="stat-item">
                     <i className="fas fa-star"></i>
-                    <span>{tour.rating}</span>
+                    <span>{tour.rating || 0}</span>
                   </div>
                 </div>
               </div>
@@ -140,25 +296,19 @@ const ManageTours = () => {
             <div className="tour-actions">
               <button
                 className="btn-secondary btn-sm"
-                onClick={() => {
-                  /* Add edit functionality */
-                }}
+                onClick={() => handleEditTour(tour)}
               >
                 <i className="fas fa-edit"></i> Edit
               </button>
               <button
                 className="btn-secondary btn-sm"
-                onClick={() => {
-                  /* Show availability functionality */
-                }}
+                onClick={() => {/* Show availability functionality */}}
               >
                 <i className="fas fa-calendar"></i> Dates
               </button>
               <button
                 className="btn-danger btn-sm"
-                onClick={() => {
-                  /* Delete tour functionality */
-                }}
+                onClick={() => handleDeleteTour(tour.id)}
               >
                 <i className="fas fa-trash"></i> Remove
               </button>
@@ -167,28 +317,32 @@ const ManageTours = () => {
         ))}
       </div>
 
-      {/* Modal لإضافة جولة جديدة */}
       {showAddModal && (
         <div className="modal">
           <div className="modal-content tour-modal">
-            <h2>Add New Tour</h2>
-            <form
-              id="addTourForm"
-              onSubmit={(e) => {
-                e.preventDefault();
-                // من هنا يمكن إضافة منطق إنشاء الجولة
-                alert("Tour created successfully!");
-                handleCloseModal();
-              }}
-            >
+            <h2>{editingTour ? 'Edit Tour' : 'Add New Tour'}</h2>
+            <form id="addTourForm" onSubmit={handleSubmit}>
               <div className="tour-form-grid">
                 <div className="form-group">
                   <label>Tour Title</label>
-                  <input type="text" className="form-input" required />
+                  <input 
+                    type="text" 
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    required 
+                  />
                 </div>
                 <div className="form-group">
                   <label>Category</label>
-                  <select className="form-input" required>
+                  <select 
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    required
+                  >
                     <option value="adventure">Adventure</option>
                     <option value="cultural">Cultural</option>
                     <option value="beach">Beach</option>
@@ -197,63 +351,87 @@ const ManageTours = () => {
                 </div>
                 <div className="form-group">
                   <label>Price (USD)</label>
-                  <input type="number" className="form-input" required />
+                  <input 
+                    type="number" 
+                    name="price"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    required 
+                  />
                 </div>
                 <div className="form-group">
                   <label>Duration (days)</label>
-                  <input type="number" className="form-input" required />
+                  <input 
+                    type="number" 
+                    name="duration"
+                    value={formData.duration}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    required 
+                  />
                 </div>
                 <div className="form-group">
                   <label>Max Group Size</label>
-                  <input type="number" className="form-input" required />
+                  <input 
+                    type="number" 
+                    name="maxGroupSize"
+                    value={formData.maxGroupSize}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    required 
+                  />
                 </div>
                 <div className="form-group">
                   <label>Difficulty</label>
-                  <select className="form-input" required>
+                  <select 
+                    name="difficulty"
+                    value={formData.difficulty}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    required
+                  >
                     <option value="easy">Easy</option>
                     <option value="moderate">Moderate</option>
                     <option value="challenging">Challenging</option>
                   </select>
                 </div>
+                <div className="form-group">
+                  <label>Image URL</label>
+                  <input 
+                    type="url" 
+                    name="image"
+                    value={formData.image}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    required 
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Status</label>
+                  <select 
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    required
+                  >
+                    <option value="active">Active</option>
+                    <option value="draft">Draft</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
                 <div className="form-group full-width">
                   <label>Description</label>
-                  <textarea className="form-input" rows="4" required></textarea>
+                  <textarea 
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    rows="4" 
+                    required
+                  ></textarea>
                 </div>
-              </div>
-
-              <h3>Tour Images</h3>
-              <div className="image-upload-grid">
-                <div className="image-upload-item">
-                  <i className="fas fa-plus"></i>
-                </div>
-                {/* المزيد من مربعات رفع الصور */}
-              </div>
-
-              <h3>Itinerary</h3>
-              <div className="itinerary-builder">
-                <div className="itinerary-day">
-                  <div className="itinerary-day-header">
-                    <h4>Day 1</h4>
-                    <button type="button" className="btn-secondary btn-sm">
-                      <i className="fas fa-trash"></i>
-                    </button>
-                  </div>
-                  <div className="form-group">
-                    <label>Title</label>
-                    <input type="text" className="form-input" required />
-                  </div>
-                  <div className="form-group">
-                    <label>Description</label>
-                    <textarea
-                      className="form-input"
-                      rows="2"
-                      required
-                    ></textarea>
-                  </div>
-                </div>
-                <button type="button" className="btn-secondary">
-                  <i className="fas fa-plus"></i> Add Day
-                </button>
               </div>
 
               <div className="modal-actions">
@@ -265,7 +443,7 @@ const ManageTours = () => {
                   Cancel
                 </button>
                 <button type="submit" className="btn-primary">
-                  Create Tour
+                  {editingTour ? 'Update Tour' : 'Create Tour'}
                 </button>
               </div>
             </form>
