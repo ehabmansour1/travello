@@ -54,17 +54,10 @@
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.9rem;
-  }
-  
-  .user-status.active {
     background: rgba(51, 255, 153, 0.2);
     color: #33ff99;
   }
   
-  .user-status.suspended {
-    background: rgba(255, 51, 102, 0.2);
-    color: #ff3366;
-  }
   
   .user-card-content {
     padding: 1.5rem;
