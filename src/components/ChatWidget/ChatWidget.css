@@ -31,3 +31,6 @@
     font-size: 1.2rem;
   }
 }
+.chat-widget {
+  text-decoration: none;
+}
