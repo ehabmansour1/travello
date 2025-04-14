@@ -87,7 +87,9 @@ const Login = () => {
               required
             />
           </div>
-
+          <Link to="/forget-password" className="register-link">
+              Forget Password?
+            </Link>
           <button
             type="submit"
             className="btn-primary login-btn"
