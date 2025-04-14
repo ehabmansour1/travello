@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./AdminDashboard.css";
 
 import AdminOverview from "../../components/AdminOverview/AdminOverview";
@@ -123,6 +124,9 @@ const AdminDashboard = () => {
             >
               Analytics & Reports
             </a>
+            <Link to="/liveChat" className="admin-nav-link">
+              Live Chat
+            </Link>
           </nav>
         </aside>
         <main className="admin-main">{renderActiveTab()}</main>

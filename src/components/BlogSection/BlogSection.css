@@ -100,21 +100,8 @@
   text-align: center;
 }
 
-.btn-primary {
-  display: inline-block;
-  padding: 0.75rem 2rem;
-  background: linear-gradient(135deg, #ff3366 0%, #ff6b6b 100%);
-  color: #fff;
-  text-decoration: none;
-  border-radius: 25px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 51, 102, 0.3);
-}
+
 
 @media (max-width: 968px) {
   .blog-grid {
