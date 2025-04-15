@@ -272,7 +272,6 @@ input:checked + .slider:before {
   }
 
   .profile-tabs {
-
     overflow-x: auto;
     padding: 1rem;
   }
