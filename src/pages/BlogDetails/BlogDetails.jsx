@@ -77,15 +77,6 @@ const BlogDetails = () => {
           <p key={index}>{paragraph}</p>
         ))}
       </div>
-
-      <div className={styles.meta}>
-        <div className={styles.stats}>
-          <span><i className="fas fa-eye"></i> {blog.views || 0} views</span>
-          <span><i className="fas fa-share-alt"></i> {blog.shares || 0} shares</span>
-          <span><i className="fas fa-comment"></i> {blog.comments || 0} comments</span>
-        </div>
-      </div>
-
       <button className={styles.backButton} onClick={() => navigate('/blogs')}>
         <i className="fas fa-arrow-left"></i> Back to Articles
       </button>

@@ -22,6 +22,8 @@ const ManageTours = () => {
     description: "",
     image: "",
     status: "active",
+    location: "",
+    rating: "5",
   });
 
   // Fetch tours from Firestore
@@ -56,18 +58,18 @@ const ManageTours = () => {
   }, [showAddModal]);
 
   useEffect(() => {
+    const filterTours = () => {
+      const filtered = tours.filter((tour) => {
+        const matchesSearch = tour.title?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = categoryFilter === "all" || tour.category === categoryFilter;
+        const matchesStatus = statusFilter === "all" || tour.status === statusFilter;
+        return matchesSearch && matchesCategory && matchesStatus;
+      });
+      setFilteredTours(filtered);
+    };
+
     filterTours();
   }, [searchTerm, categoryFilter, statusFilter, tours]);
-
-  const filterTours = () => {
-    const filtered = tours.filter((tour) => {
-      const matchesSearch = tour.title?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = categoryFilter === "all" || tour.category === categoryFilter;
-      const matchesStatus = statusFilter === "all" || tour.status === statusFilter;
-      return matchesSearch && matchesCategory && matchesStatus;
-    });
-    setFilteredTours(filtered);
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -89,6 +91,8 @@ const ManageTours = () => {
       description: "",
       image: "",
       status: "active",
+      location: "",
+      rating: "5",
     });
     setShowAddModal(true);
   };
@@ -105,6 +109,8 @@ const ManageTours = () => {
       description: tour.description,
       image: tour.image,
       status: tour.status,
+      location: tour.location || "",
+      rating: tour.rating || "5",
     });
     setShowAddModal(true);
   };
@@ -152,11 +158,16 @@ const ManageTours = () => {
           maxGroupSize: Number(formData.maxGroupSize),
           duration: Number(formData.duration),
           bookings: editingTour.bookings || 0,
-          rating: editingTour.rating || 0,
+          location: formData.location,
+          rating: Number(formData.rating),
         });
 
         setTours(tours.map(tour => 
-          tour.id === editingTour.id ? { ...tour, ...formData } : tour
+          tour.id === editingTour.id ? { 
+            ...tour, 
+            ...formData,
+            rating: Number(formData.rating)
+          } : tour
         ));
 
         Swal.fire({
@@ -175,7 +186,7 @@ const ManageTours = () => {
           maxGroupSize: Number(formData.maxGroupSize),
           duration: Number(formData.duration),
           bookings: 0,
-          rating: 0,
+          rating: Number(formData.rating),
           dates: [],
         });
 
@@ -183,7 +194,7 @@ const ManageTours = () => {
           id: docRef.id,
           ...formData,
           bookings: 0,
-          rating: 0,
+          rating: Number(formData.rating),
           dates: [],
         };
 
@@ -222,6 +233,8 @@ const ManageTours = () => {
       description: "",
       image: "",
       status: "active",
+      location: "",
+      rating: "5",
     });
   };
 
@@ -278,6 +291,16 @@ const ManageTours = () => {
             </div>
             <div className="tour-content">
               <h3>{tour.title}</h3>
+              <p className="tour-location"><i className="fas fa-map-marker-alt"></i> {tour.location}</p>
+              <div className="tour-rating">
+                {[...Array(5)].map((_, index) => (
+                  <i
+                    key={index}
+                    className={`fas fa-star ${index < (tour.rating || 0) ? 'active' : ''}`}
+                  ></i>
+                ))}
+                <span className="rating-text">({tour.rating || 0}/5)</span>
+              </div>
               <p>{tour.description?.substring(0, 100)}...</p>
               <div className="tour-meta">
                 <div className="tour-price">${tour.price}</div>
@@ -285,10 +308,6 @@ const ManageTours = () => {
                   <div className="stat-item">
                     <i className="fas fa-users"></i>
                     <span>{tour.bookings || 0} bookings</span>
-                  </div>
-                  <div className="stat-item">
-                    <i className="fas fa-star"></i>
-                    <span>{tour.rating || 0}</span>
                   </div>
                 </div>
               </div>
@@ -299,12 +318,6 @@ const ManageTours = () => {
                 onClick={() => handleEditTour(tour)}
               >
                 <i className="fas fa-edit"></i> Edit
-              </button>
-              <button
-                className="btn-secondary btn-sm"
-                onClick={() => {/* Show availability functionality */}}
-              >
-                <i className="fas fa-calendar"></i> Dates
               </button>
               <button
                 className="btn-danger btn-sm"
@@ -333,6 +346,34 @@ const ManageTours = () => {
                     className="form-input" 
                     required 
                   />
+                </div>
+                <div className="form-group">
+                  <label>Location</label>
+                  <input 
+                    type="text" 
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    required 
+                    placeholder="e.g., Paris, France"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Rating</label>
+                  <select 
+                    name="rating"
+                    value={formData.rating}
+                    onChange={handleInputChange}
+                    className="form-input" 
+                    required
+                  >
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                  </select>
                 </div>
                 <div className="form-group">
                   <label>Category</label>
