@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './TravelerForm.css';
 
-export default function TravelerForm() {
+export default function TravelerForm({ onFormDataChange }) {
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        whatsapp: '',
+        phone: ''
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        const updatedData = {
+            ...formData,
+            [name]: value
+        };
+        setFormData(updatedData);
+        onFormDataChange(updatedData);
+    };
+
     return (
         <div className="booking-step" id="step2">
             <h2>Traveler Information</h2>
@@ -10,50 +27,47 @@ export default function TravelerForm() {
                 <div className="form-grid">
                     <div className="form-group">
                         <label>First Name</label>
-                        <input type="text" className="form-input" required />
+                        <input 
+                            type="text" 
+                            name="firstName"
+                            value={formData.firstName}
+                            onChange={handleInputChange}
+                            className="form-input" 
+                            required 
+                        />
                     </div>
                     <div className="form-group">
                         <label>Last Name</label>
-                        <input type="text" className="form-input" required />
+                        <input 
+                            type="text" 
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleInputChange}
+                            className="form-input" 
+                            required 
+                        />
                     </div>
                     <div className="form-group">
-                        <label>Email</label>
-                        <input type="email" className="form-input" required />
+                        <label>Whatsapp</label>
+                        <input 
+                            type="tel" 
+                            name="whatsapp"
+                            value={formData.whatsapp}
+                            onChange={handleInputChange}
+                            className="form-input" 
+                            required 
+                        />
                     </div>
                     <div className="form-group">
                         <label>Phone</label>
-                        <input type="tel" className="form-input" required />
-                    </div>
-                </div>
-
-                <h3>Additional Travelers</h3>
-                <div className="additional-travelers">
-                    <div className="form-grid">
-                        <div>
-                        <h3>adult 2</h3>
-
-                        <div className="form-group">
-                            <label>First Name</label>
-                            <input type="text" className="form-input" required />
-                        </div>
-                        <div className="form-group">
-                            <label>Last Name</label>
-                            <input type="text" className="form-input" required />
-                        </div>
-                        </div>
-                        
-                        <div>
-                            <h3>adult 3</h3>
-                        <div className="form-group">
-                            <label>First Name</label>
-                            <input type="email" className="form-input" required />
-                        </div>
-                        <div className="form-group">
-                            <label>Last Name</label>
-                            <input type="tel" className="form-input" required />
-                        </div>
-                        </div>
-                        
+                        <input 
+                            type="tel" 
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            className="form-input" 
+                            required 
+                        />
                     </div>
                 </div>
             </div>

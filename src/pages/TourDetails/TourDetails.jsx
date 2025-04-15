@@ -10,7 +10,6 @@ const TourDetails = () => {
   const navigate = useNavigate();
   const [tour, setTour] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchTour = async () => {
@@ -56,15 +55,6 @@ const TourDetails = () => {
     return null;
   }
 
-  const calculateTotal = () => {
-    const subtotal = tour.price * quantity;
-    const taxRate = Math.round(subtotal * 0.1); // 10% tax
-    const total = subtotal + taxRate;
-    return { subtotal, taxRate, total };
-  };
-
-  const { subtotal, taxRate, total } = calculateTotal();
-
   return (
     <div className={styles["tour-details-container"]}>
       <div className={styles["tour-details-header"]}>
@@ -76,10 +66,15 @@ const TourDetails = () => {
         </button>
         <h1>{tour.title}</h1>
         <div className={styles["tour-meta"]}>
-          <div className={styles["tour-rating"]}>
-            <span>★★★★★</span>
-            <span>({tour.rating || '0'})</span>
-          </div>
+        <div className="tour-rating">
+                {[...Array(5)].map((_, index) => (
+                  <i
+                    key={index}
+                    className={`fas fa-star ${index < (tour.rating || 0) ? 'active' : ''}`}
+                  ></i>
+                ))}
+                <span className="rating-text">({tour.rating || 0}/5)</span>
+              </div>
           <div className={styles["tour-location"]}>
             <i className="fas fa-map-marker-alt"></i>
             <span>{tour.location || 'Location not specified'}</span>
@@ -172,50 +167,6 @@ const TourDetails = () => {
               <span className={styles["price-amount"]}>${tour.price}</span>
               <span className={styles["price-per"]}>per person</span>
             </div>
-
-            <div className={styles["booking-guests"]}>
-              <h4>Number of Guests</h4>
-              <div className={styles["quantity-selector"]}>
-                <button
-                  className={styles["quantity-btn"]}
-                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                >
-                  -
-                </button>
-                <input
-                  type="number"
-                  className={styles["quantity-input"]}
-                  value={quantity}
-                  min="1"
-                  max={tour.maxGroupSize}
-                  readOnly
-                />
-                <button
-                  className={styles["quantity-btn"]}
-                  onClick={() => setQuantity((prev) => Math.min(tour.maxGroupSize, prev + 1))}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            <div className={styles["booking-total"]}>
-              <div className={styles["total-row"]}>
-                <span>Tour Price</span>
-                <span>
-                  ${tour.price} × {quantity} = ${subtotal}
-                </span>
-              </div>
-              <div className={styles["total-row"]}>
-                <span>Taxes & Fees</span>
-                <span>${taxRate}</span>
-              </div>
-              <div className={styles["total-row final"]}>
-                <span>Total</span>
-                <span>${total}</span>
-              </div>
-            </div>
-
             <button
               className={styles["btn-primary"]}
               onClick={() => navigate(`/booking/${tour.id}`)}

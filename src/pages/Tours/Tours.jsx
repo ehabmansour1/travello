@@ -126,9 +126,14 @@ const Tours = () => {
                   {tour.location || 'Location not specified'}
                 </div>
                 <div className="tour-rating">
-                  <i className="fas fa-star"></i>
-                  {tour.rating || 0}
-                </div>
+                {[...Array(5)].map((_, index) => (
+                  <i
+                    key={index}
+                    className={`fas fa-star ${index < (tour.rating || 0) ? 'active' : ''}`}
+                  ></i>
+                ))}
+                <span className="rating-text">({tour.rating || 0}/5)</span>
+              </div>
                 <div className="tour-details">
                   <span className="tour-price">${tour.price}</span>
                   <span className="tour-duration">{tour.duration} days</span>

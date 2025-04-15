@@ -62,7 +62,7 @@ const App = () => {
           <Route path="/liveChat" element={<LiveChat />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/:id" element={<BlogDetails />} />
-          <Route path="/booking" element={<Booking />} />
+          <Route path="/booking/:id" element={<Booking />} />
           <Route path="/about" element={<About />} />
           <Route path="/Terms" element={<TermsAndPrivacy />} />
           <Route path="*" element={<NotFound />} />
