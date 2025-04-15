@@ -74,4 +74,33 @@
     color: #fff;
     font-size: 1rem;
     transition: all 0.3s ease;
-  }
+}
+
+.tour-info {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.info-item span {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.warning-text {
+  color: #ff3366;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.travelers-section {
+  margin: 20px 0;
+}
