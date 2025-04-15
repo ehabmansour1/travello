@@ -35,16 +35,15 @@
   
   .user-card-header {
     position: relative;
-    padding: 1.5rem;
+    padding: 0.6rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .user-avatar {
-    width: 80px;
-    height: 80px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 1rem;
   }
   
   .user-status {

@@ -7,7 +7,7 @@ import './ManageBookings.css';
 const ManageBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -116,11 +116,6 @@ const ManageBookings = () => {
         </div>
       </div>
       <div className="bookings-table-container">
-        {loading ? (
-          <div className="loading-spinner">
-            <div className="spinner"></div>
-          </div>
-        ) : (
           <table className="bookings-table">
             <thead>
               <tr>
@@ -183,7 +178,6 @@ const ManageBookings = () => {
               ))}
             </tbody>
           </table>
-        )}
       </div>
     </section>
   );
