@@ -20,21 +20,25 @@ const Hero = ({ searchData, handleSearchChange, handleSearchSubmit }) => {
             onChange={handleSearchChange}
           />
           <input
-            type="date"
-            name="date"
+            type="number"
+            name="price"
             className={styles["search-input"]}
-            value={searchData.date}
+            placeholder="Budget limit"
+            value={searchData.price}
             onChange={handleSearchChange}
+            min="0"
           />
           <select
-            name="guests"
+            name="category"
             className={styles["search-input"]}
-            value={searchData.guests}
+            value={searchData.category}
             onChange={handleSearchChange}
           >
-            <option>2 Adults</option>
-            <option>1 Adult</option>
-            <option>Family Pack</option>
+            <option value="all">All Categories</option>
+            <option value="adventure">Adventure</option>
+            <option value="cultural">Cultural</option>
+            <option value="beach">Beach</option>
+            <option value="mountain">Mountain</option>
           </select>
           <button type="submit" className="btn-primary">
             Search
