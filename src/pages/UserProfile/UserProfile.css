@@ -12,7 +12,6 @@
   width: 280px;
   position: sticky;
   top: 100px;
-  height: calc(100vh - 120px);
 }
 
 .profile-tabs {
@@ -273,7 +272,7 @@ input:checked + .slider:before {
   }
 
   .profile-tabs {
-    flex-direction: row;
+
     overflow-x: auto;
     padding: 1rem;
   }
