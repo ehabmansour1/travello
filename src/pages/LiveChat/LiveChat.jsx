@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useFirebase } from "../../contexts/FirebaseContext";
 import { db } from "../../firebase";
-
+import { useNavigate } from "react-router-dom";
 import {
   collection,
   addDoc,
@@ -15,6 +15,7 @@ import {
   getDoc,
   deleteDoc,
   getDocs,
+  setDoc,
 } from "firebase/firestore";
 import { getAIResponse } from "../../services/aiChatbot";
 import styles from "./LiveChat.module.css";
@@ -31,9 +32,11 @@ import {
   faArrowLeft,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
 
 const LiveChat = () => {
   const { user, getUserData } = useFirebase();
+  const navigate = useNavigate();
   const [userRole, setUserRole] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -56,21 +59,63 @@ const LiveChat = () => {
   }, [messages]); // Scroll when messages change
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      if (user) {
+    const checkAuth = async () => {
+      if (!user) {
+        await Swal.fire({
+          title: "Authentication Required",
+          text: "Please login to access the live chat",
+          icon: "warning",
+          confirmButtonText: "Login Now",
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/login");
+          } else {
+            navigate("/");
+          }
+        });
+        return;
+      }
+
+      try {
         const userData = await getUserData(user.uid);
-        setUserRole(userData?.role || "user");
-        if (userData?.role === "admin") {
+        setUserRole(userData.role);
+        if (userData.role === "admin") {
           const adminDoc = await getDoc(doc(db, "users", user.uid));
           if (adminDoc.exists()) {
             setAdminProfile(adminDoc.data());
           }
+        } else {
+          // Initialize user's AI chat session
+          const userAIChatRef = doc(db, "ai_chats", user.uid);
+          const userAIChatDoc = await getDoc(userAIChatRef);
+
+          if (!userAIChatDoc.exists()) {
+            // Create new AI chat session for user
+            await setDoc(userAIChatRef, {
+              userId: user.uid,
+              userName: user.displayName || "User",
+              createdAt: serverTimestamp(),
+              lastActivity: serverTimestamp(),
+            });
+          }
         }
         setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+        await Swal.fire({
+          title: "Error",
+          text: "Failed to fetch user data. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        navigate("/");
       }
     };
-    fetchUserRole();
-  }, [user, getUserData]);
+
+    checkAuth();
+  }, [user, getUserData, navigate]);
 
   useEffect(() => {
     if (userRole === "admin") {
@@ -100,10 +145,10 @@ const LiveChat = () => {
       });
       return () => unsubscribe();
     } else if (userRole === "user") {
-      // Set up listener for AI chat messages when user is chatting with AI
+      // Set up listener for user's specific AI chat messages
       if (chatType === "ai") {
         const q = query(
-          collection(db, "chats", "ai_chat", "messages"),
+          collection(db, "ai_chats", user.uid, "messages"),
           orderBy("timestamp", "asc")
         );
 
@@ -132,7 +177,7 @@ const LiveChat = () => {
         return () => unsubscribe();
       }
     }
-  }, [userRole, activeChat, chatType]);
+  }, [userRole, activeChat, chatType, user]);
 
   useEffect(() => {
     if (userRole === "admin" && activeChat) {
@@ -175,8 +220,8 @@ const LiveChat = () => {
 
     if (userRole === "user") {
       if (chatType === "ai") {
-        // Send user message
-        await addDoc(collection(db, "chats", "ai_chat", "messages"), {
+        // Send user message to their specific AI chat
+        await addDoc(collection(db, "ai_chats", user.uid, "messages"), {
           text: messageToSend,
           senderId: user.uid,
           senderName: user.displayName || "User",
@@ -184,12 +229,17 @@ const LiveChat = () => {
           type: "user",
         });
 
+        // Update last activity
+        await updateDoc(doc(db, "ai_chats", user.uid), {
+          lastActivity: serverTimestamp(),
+        });
+
         setIsTyping(true);
         const aiResponse = await getAIResponse(messageToSend);
         setIsTyping(false);
 
-        // Send AI response
-        await addDoc(collection(db, "chats", "ai_chat", "messages"), {
+        // Send AI response to user's specific chat
+        await addDoc(collection(db, "ai_chats", user.uid, "messages"), {
           text: aiResponse.message,
           senderId: "ai",
           senderName: "AI Assistant",
@@ -249,8 +299,8 @@ const LiveChat = () => {
   const handleClearChat = async () => {
     if (userRole === "user") {
       if (chatType === "ai") {
-        // Clear AI chat
-        const messagesRef = collection(db, "chats", "ai_chat", "messages");
+        // Clear user's specific AI chat
+        const messagesRef = collection(db, "ai_chats", user.uid, "messages");
         const snapshot = await getDocs(messagesRef);
         const deletePromises = snapshot.docs.map((doc) => deleteDoc(doc.ref));
         await Promise.all(deletePromises);
