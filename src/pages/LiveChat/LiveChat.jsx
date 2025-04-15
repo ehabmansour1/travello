@@ -62,10 +62,10 @@ const LiveChat = () => {
     const checkAuth = async () => {
       if (!user) {
         await Swal.fire({
-          title: "Authentication Required",
+          title: "Login Required",
           text: "Please login to access the live chat",
           icon: "warning",
-          confirmButtonText: "Login Now",
+          confirmButtonText: "Login",
           showCancelButton: true,
           cancelButtonText: "Cancel",
         }).then((result) => {

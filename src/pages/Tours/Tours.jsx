@@ -5,9 +5,11 @@ import {
   removeFromWishlist,
 } from "../../store/slices/wishlistSlice";
 import "./Tours.css";
-import { Link } from "react-router-dom";
-import { collection, getDocs } from "firebase/firestore";
+import { Link, useNavigate } from "react-router-dom";
+import { collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase";
+import { useFirebase } from "../../contexts/FirebaseContext";
+import Swal from "sweetalert2";
 
 const Tours = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -15,6 +17,8 @@ const Tours = () => {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const wishlistState = useSelector((state) => state.wishlist);
+  const { user } = useFirebase();
+  const navigate = useNavigate();
 
   // Fetch tours from Firestore
   useEffect(() => {
@@ -37,14 +41,73 @@ const Tours = () => {
     fetchTours();
   }, []);
 
-  const handleWishlistToggle = (tour) => {
-    const isInWishlist = wishlistState.items.some(
-      (item) => item.id === tour.id
-    );
-    if (isInWishlist) {
-      dispatch(removeFromWishlist(tour.id));
-    } else {
-      dispatch(addToWishlist(tour));
+  // Load wishlist from Firestore
+  useEffect(() => {
+    const loadWishlist = async () => {
+      if (!user) return;
+      
+      try {
+        const wishlistCollection = collection(db, "wishlist");
+        const querySnapshot = await getDocs(wishlistCollection);
+        const userWishlistItems = querySnapshot.docs
+          .filter(doc => doc.data().userId === user.uid)
+          .map(doc => doc.data().tour);
+          
+        // Update Redux state with Firestore data
+        userWishlistItems.forEach(tour => {
+          if (!wishlistState.items.some(item => item.id === tour.id)) {
+            dispatch(addToWishlist(tour));
+          }
+        });
+      } catch (error) {
+        console.error("Error loading wishlist:", error);
+      }
+    };
+
+    loadWishlist();
+  }, [user, dispatch, wishlistState.items]);
+
+  const handleWishlistToggle = async (tour) => {
+    if (!user) {
+      await Swal.fire({
+        title: "Login Required",
+        text: "Please login to add tours to your wishlist",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Login",
+        cancelButtonText: "Cancel"
+      });
+      navigate("/login");
+      return;
+    }
+
+    const isInWishlist = wishlistState.items.some((item) => item.id === tour.id);
+    const wishlistRef = doc(db, "wishlist", `${user.uid}_${tour.id}`);
+
+    try {
+      if (isInWishlist) {
+        // Remove from Firestore
+        await deleteDoc(wishlistRef);
+        // Remove from Redux
+        dispatch(removeFromWishlist(tour.id));
+      } else {
+        // Add to Firestore
+        await setDoc(wishlistRef, {
+          userId: user.uid,
+          tourId: tour.id,
+          tour: tour,
+          createdAt: new Date().toISOString()
+        });
+        // Add to Redux
+        dispatch(addToWishlist(tour));
+      }
+    } catch (error) {
+      console.error("Error updating wishlist:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Failed to update wishlist. Please try again.",
+        icon: "error"
+      });
     }
   };
 
