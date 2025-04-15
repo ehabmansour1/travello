@@ -1,11 +1,33 @@
 import "./UserDashboard.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useFirebase } from "../../contexts/FirebaseContext";
+import { Link } from "react-router-dom";
 import WishlistItem from "../../components/Wishlist/WishlistItem";
 
 const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const wishlist = useSelector((state) => state.wishlist.items);
+  const { user, getUserData } = useFirebase();
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const data = await getUserData(user.uid);
+          setUserData(data);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user, getUserData]);
 
   const upcomingTrips = [
     {
@@ -74,23 +96,75 @@ const UserDashboard = () => {
     alert(`Downloading ${type} for booking ${id}`);
   };
 
+  const formatDate = (timestamp) => {
+    if (!timestamp) return "N/A";
+
+    try {
+      // Check if timestamp is a Firestore Timestamp
+      if (timestamp.toDate && typeof timestamp.toDate === "function") {
+        const date = timestamp.toDate();
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      // If it's a regular Date object or timestamp number
+      if (timestamp instanceof Date || typeof timestamp === "number") {
+        const date = new Date(timestamp);
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      // If it's a string date
+      if (typeof timestamp === "string") {
+        const date = new Date(timestamp);
+        if (!isNaN(date.getTime())) {
+          return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        }
+      }
+
+      return "Invalid date";
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Date unavailable";
+    }
+  };
+
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+
   return (
     <div className="user-dashboard">
       <div className="dashboard-container">
         <div className="dashboard-sidebar">
           <nav className="dashboard-nav">
-            {/* نقل user-info إلى داخل sidebar */}
-            <div className="user-info">
-              <img
-                src="https://tse4.mm.bing.net/th?id=OIP.hGSCbXlcOjL_9mmzerqAbQHaHa&rs=1&pid=ImgDetMain"
-                alt="Profile"
-                className="avatar"
-              />
-              <div className="user-details">
-                <h3>John Doe</h3>
-                <p>Member since 2025</p>
+            <Link to="/userProfile" className="user-info-link">
+              <div className="user-info">
+                <img
+                  src={
+                    userData?.photoURL ||
+                    "https://tse4.mm.bing.net/th?id=OIP.hGSCbXlcOjL_9mmzerqAbQHaHa&rs=1&pid=ImgDetMain"
+                  }
+                  alt="Profile"
+                  className="avatar"
+                />
+                <div className="user-details">
+                  <h3>{userData?.name || "User"}</h3>
+                  <p>From {formatDate(userData?.createdAt)}</p>
+                  <p className="user-email">{userData?.email}</p>
+                </div>
               </div>
-            </div>
+            </Link>
             <a
               href="#overview"
               className={activeTab === "overview" ? "active" : ""}
@@ -144,12 +218,11 @@ const UserDashboard = () => {
           </nav>
         </div>
 
-        {/* المحتوى الرئيسي للتابات */}
         <div className="dashboard-main">
           {activeTab === "overview" && (
             <div className="dashboard-tab active" id="overview">
               <div className="welcome-section">
-                <h1>Welcome back, John!</h1>
+                <h1>Welcome back, {userData?.displayName || "User"}!</h1>
                 <p>Here's what's happening with your travel plans</p>
               </div>
               <div className="stats-grid">
