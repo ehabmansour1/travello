@@ -1,16 +1,23 @@
 import "./UserDashboard.css";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useFirebase } from "../../contexts/FirebaseContext";
 import { Link } from "react-router-dom";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../../firebase";
+import { useFirebase } from "../../contexts/FirebaseContext";
 import WishlistItem from "../../components/Wishlist/WishlistItem";
 
 const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const wishlist = useSelector((state) => state.wishlist.items);
   const { user, getUserData } = useFirebase();
   const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -29,25 +36,56 @@ const UserDashboard = () => {
     fetchUserData();
   }, [user, getUserData]);
 
-  const upcomingTrips = [
-    {
-      id: 1,
-      title: "Majestic Switzerland",
-      image: "https://images.unsplash.com/photo-1531973819741-e27a5ae2cc7b",
-      date: "June 15, 2024",
-      duration: "7 days",
-      status: "Confirmed",
-    },
-    {
-      id: 2,
-      title: "Thailand Paradise",
-      image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a",
-      date: "July 1, 2024",
-      duration: "10 days",
-      status: "Pending",
-    },
-  ];
 
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        if (!user) return;
+
+        const bookingsRef = collection(db, "bookings");
+        const q = query(bookingsRef, where("userId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+        
+        const bookingsData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          date: doc.data().createdAt.toDate().toISOString().split('T')[0]
+        }));
+
+        setBookings(bookingsData);
+        setFilteredBookings(bookingsData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, [user]);
+
+  useEffect(() => {
+    const filterBookings = () => {
+      let filtered = [...bookings];
+
+      if (statusFilter !== "all") {
+        filtered = filtered.filter(booking => booking.status.toLowerCase() === statusFilter);
+      }
+
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        filtered = filtered.filter(booking => 
+          booking.tourTitle.toLowerCase().includes(searchLower)
+        );
+      }
+
+      setFilteredBookings(filtered);
+    };
+
+    filterBookings();
+  }, [statusFilter, searchTerm, bookings]);
+
+  
   const activities = [
     {
       type: "booking",
@@ -69,25 +107,6 @@ const UserDashboard = () => {
     },
   ];
 
-  const bookings = [
-    {
-      id: "INV-2024-001",
-      date: "2024-01-15",
-      trip: "Majestic Switzerland",
-      amount: 2499,
-      status: "Paid",
-      documents: ["invoice", "itinerary", "voucher"],
-    },
-    {
-      id: "INV-2024-002",
-      date: "2024-02-01",
-      trip: "Thailand Paradise",
-      amount: 1899,
-      status: "Pending",
-      documents: ["invoice"],
-    },
-  ];
-
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -95,60 +114,22 @@ const UserDashboard = () => {
   const downloadDocument = (type, id) => {
     alert(`Downloading ${type} for booking ${id}`);
   };
+  
 
-  const formatDate = (timestamp) => {
-    if (!timestamp) return "N/A";
-
-    try {
-      // Check if timestamp is a Firestore Timestamp
-      if (timestamp.toDate && typeof timestamp.toDate === "function") {
-        const date = timestamp.toDate();
-        return date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-      }
-
-      // If it's a regular Date object or timestamp number
-      if (timestamp instanceof Date || typeof timestamp === "number") {
-        const date = new Date(timestamp);
-        return date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-      }
-
-      // If it's a string date
-      if (typeof timestamp === "string") {
-        const date = new Date(timestamp);
-        if (!isNaN(date.getTime())) {
-          return date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          });
-        }
-      }
-
-      return "Invalid date";
-    } catch (error) {
-      console.error("Error formatting date:", error);
-      return "Date unavailable";
-    }
+  const handleStatusFilterChange = (e) => {
+    setStatusFilter(e.target.value);
   };
 
-  if (loading) {
-    return <div className="loading">Loading...</div>;
-  }
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <div className="user-dashboard">
       <div className="dashboard-container">
         <div className="dashboard-sidebar">
           <nav className="dashboard-nav">
-            <Link to="/userProfile" className="user-info-link">
+          <Link to="/userProfile" className="user-info-link">
               <div className="user-info">
                 <img
                   src={
@@ -160,7 +141,7 @@ const UserDashboard = () => {
                 />
                 <div className="user-details">
                   <h3>{userData?.name || "User"}</h3>
-                  <p>From {formatDate(userData?.createdAt)}</p>
+                  <p>From {new Date(userData?.createdAt).toLocaleDateString()}</p>
                   <p className="user-email">{userData?.email}</p>
                 </div>
               </div>
@@ -205,16 +186,6 @@ const UserDashboard = () => {
             >
               Invoices
             </a>
-            <a
-              href="#rewards"
-              className={activeTab === "rewards" ? "active" : ""}
-              onClick={(e) => {
-                e.preventDefault();
-                handleTabClick("rewards");
-              }}
-            >
-              Rewards
-            </a>
           </nav>
         </div>
 
@@ -222,14 +193,14 @@ const UserDashboard = () => {
           {activeTab === "overview" && (
             <div className="dashboard-tab active" id="overview">
               <div className="welcome-section">
-                <h1>Welcome back, {userData?.displayName || "User"}!</h1>
+                <h1>Welcome back, John!</h1>
                 <p>Here's what's happening with your travel plans</p>
               </div>
               <div className="stats-grid">
                 <div className="stat-card">
                   <i className="fas fa-plane"></i>
                   <div className="stat-info">
-                    <h3>3</h3>
+                    <h3>{bookings.filter(b => b.status === 'pending' || b.status === 'confirmed').length}</h3>
                     <p>Upcoming Trips</p>
                   </div>
                 </div>
@@ -258,27 +229,29 @@ const UserDashboard = () => {
               <div className="upcoming-trips">
                 <h2>Upcoming Trips</h2>
                 <div className="trip-cards">
-                  {upcomingTrips.map((trip) => (
-                    <div key={trip.id} className="trip-card">
-                      <div
-                        className="trip-image"
-                        style={{ backgroundImage: `url(${trip.image})` }}
-                      ></div>
-                      <div className="trip-content">
-                        <div className="trip-date">{trip.date}</div>
-                        <h3>{trip.title}</h3>
-                        <div className="trip-meta">
-                          <span>
-                            <i className="fas fa-clock"></i> {trip.duration}
-                          </span>
-                          <span>
-                            <i className="fas fa-check-circle"></i>{" "}
-                            {trip.status}
-                          </span>
+                  {loading ? (
+                    <p>Loading trips...</p>
+                  ) : filteredBookings.length > 0 ? (
+                    filteredBookings.map((booking) => (
+                      <div key={booking.id} className="trip-card">
+                        <span className={`user-status-badge ${booking.status.toLowerCase()}`}>
+                          {booking.status}
+                        </span>
+                        <div className="trip-content">
+                          <div className="trip-date">{new Date(booking.date).toLocaleDateString()}</div>
+                          <h3>{booking.tourTitle}</h3>
+                          <div className="trip-meta">
+                            <span>
+                              <i className="fas fa-users"></i> {booking.numTravelers} travelers
+                            </span>
+                            
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p>No upcoming trips found</p>
+                  )}
                 </div>
               </div>
               <div className="recent-activity">
@@ -302,30 +275,55 @@ const UserDashboard = () => {
           {activeTab === "bookings" && (
             <div className="dashboard-tab active" id="bookings">
               <h2>My Bookings</h2>
-              <div className="bookings-filters">
+              <div className="user-bookings-filters">
                 <div className="filter-group">
-                  <select className="filter-select">
+                  <select 
+                    className="user-filter-select"
+                    value={statusFilter}
+                    onChange={handleStatusFilterChange}
+                  >
                     <option value="all">All Bookings</option>
-                    <option value="upcoming">Upcoming</option>
-                    <option value="past">Past</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="pending">Pending</option>
                     <option value="cancelled">Cancelled</option>
                   </select>
                 </div>
-                <div className="search-group">
+                <div className="user-search-group">
                   <input
                     type="text"
                     placeholder="Search bookings..."
                     className="search-input"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
                   />
                 </div>
               </div>
               <div className="bookings-grid">
-                {bookings.map((booking, index) => (
-                  <div key={index} className="booking-card">
-                    <p>{booking.trip}</p>
-                    {/* تفاصيل إضافية للحجز يمكن إضافتها هنا */}
-                  </div>
-                ))}
+                {loading ? (
+                  <p>Loading bookings...</p>
+                ) : filteredBookings.length > 0 ? (
+                  filteredBookings.map((booking) => (
+                    <div key={booking.id} className="trip-card">
+                      <span className={`user-status-badge ${booking.status.toLowerCase()}`}>
+                        {booking.status}
+                      </span>
+                      <div className="trip-content">
+                        <div className="trip-date">
+                          {new Date(booking.date).toLocaleDateString()}
+                        </div>
+                        <h3>{booking.tourTitle}</h3>
+                        <div className="trip-meta">
+                          <span>
+                            <i className="fas fa-users"></i> {booking.numTravelers} travelers
+                          </span>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p>No bookings found</p>
+                )}
               </div>
             </div>
           )}
@@ -350,21 +348,21 @@ const UserDashboard = () => {
                 <table>
                   <thead>
                     <tr>
-                      <th>Invoice #</th>
+                      <th>Booking #</th>
                       <th>Date</th>
-                      <th>Trip</th>
+                      <th>Tour</th>
                       <th>Amount</th>
                       <th>Status</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {bookings.map((booking, index) => (
-                      <tr key={index}>
+                    {bookings.map((booking) => (
+                      <tr key={booking.id}>
                         <td>{booking.id}</td>
                         <td>{new Date(booking.date).toLocaleDateString()}</td>
-                        <td>{booking.trip}</td>
-                        <td>${booking.amount}</td>
+                        <td>{booking.tourTitle}</td>
+                        <td>${booking.totalPrice}</td>
                         <td>
                           <span
                             className={`status-badge ${booking.status.toLowerCase()}`}
@@ -374,36 +372,21 @@ const UserDashboard = () => {
                         </td>
                         <td>
                           <div className="action-buttons">
-                            {booking.documents.map((doc, docIndex) => (
-                              <button
-                                key={docIndex}
-                                className="btn-secondary btn-sm"
-                                onClick={() =>
-                                  downloadDocument(doc, booking.id)
-                                }
-                              >
-                                <i className="fas fa-download"></i>{" "}
-                                {doc.charAt(0).toUpperCase() + doc.slice(1)}
-                              </button>
-                            ))}
+                            <button
+                              className="btn-secondary btn-sm"
+                              onClick={() =>
+                                downloadDocument('invoice', booking.id)
+                              }
+                            >
+                              <i className="fas fa-download"></i>{" "}
+                              Invoice
+                            </button>
                           </div>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              </div>
-            </div>
-          )}
-          {activeTab === "rewards" && (
-            <div className="dashboard-tab active" id="rewards">
-              <h2>Travel Rewards</h2>
-              <div className="rewards-summary">
-                <div className="points-card">
-                  <h3>Available Points</h3>
-                  <div className="points-amount">2,500</div>
-                  <p>Points expire on Dec 31, 2024</p>
-                </div>
               </div>
             </div>
           )}
