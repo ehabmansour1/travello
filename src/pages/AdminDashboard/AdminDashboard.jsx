@@ -31,8 +31,6 @@ const AdminDashboard = () => {
         return <ManageBlogs />;
       case "payments":
         return <ManagePayments />;
-      case "analytics":
-        return <Analytics />;
       default:
         return null;
     }
@@ -50,7 +48,7 @@ const AdminDashboard = () => {
                 className="avatar"
               />
               <div className="user-details">
-                <h3>John Doe</h3>
+                <h3>Admin</h3>
                 <p>Member since 2025</p>
               </div>
             </div>
@@ -114,16 +112,7 @@ const AdminDashboard = () => {
             >
               Manage Payments
             </a>
-            <a
-              href="#analytics"
-              className={activeTab === "analytics" ? "active" : ""}
-              onClick={(e) => {
-                e.preventDefault();
-                handleTabClick("analytics");
-              }}
-            >
-              Analytics & Reports
-            </a>
+
             <Link to="/liveChat" className="admin-nav-link">
               Live Chat
             </Link>

@@ -41,7 +41,8 @@ const ManageUsers = () => {
     <section id="users" className="admin-tab active">
       <div className="admin-header">
         <h2>User Management</h2>
-        <div className="header-actions">
+      </div>
+      <div className="header-actions">
           <div className="search-filters">
             <input 
               type="text" 
@@ -52,12 +53,11 @@ const ManageUsers = () => {
             />
           </div>
         </div>
-      </div>
       <div className="users-grid">
         {filteredUsers.map((user) => (
           <div key={user.id} className="user-card">
             <div className="user-card-header">
-              <img src={user.photoURL || ''} alt={user.name} className="user-avatar" />
+              <img src={user.photoURL || 'https://tse4.mm.bing.net/th?id=OIP.hGSCbXlcOjL_9mmzerqAbQHaHa&rs=1&pid=ImgDetMain'} alt={user.name} className="user-avatar" />
             </div>
             <div className="user-card-content">
               <h3> Name : {user.name}</h3>
