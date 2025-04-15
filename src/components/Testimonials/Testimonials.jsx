@@ -2,6 +2,10 @@ import React from "react";
 import "./Testimonials.css";
 
 const Testimonials = ({ testimonials, currentTestimonial }) => {
+  const renderStars = (rating) => {
+    return "★".repeat(rating) + "☆".repeat(5 - rating);
+  };
+
   return (
     <section className="testimonials">
       <div className="section-header">
@@ -21,7 +25,7 @@ const Testimonials = ({ testimonials, currentTestimonial }) => {
               className="testimonial-avatar"
               style={{ backgroundImage: `url(${testimonial.avatar})` }}
             ></div>
-            <div className="testimonial-rating">★★★★★</div>
+            <div className="testimonial-rating">{renderStars(testimonial.rating)}</div>
             <p>{testimonial.text}</p>
             <h4>{testimonial.name}</h4>
           </div>
