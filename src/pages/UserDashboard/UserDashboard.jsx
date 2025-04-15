@@ -1,11 +1,13 @@
 import "./UserDashboard.css";
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useFirebase } from "../../contexts/FirebaseContext";
 import WishlistItem from "../../components/Wishlist/WishlistItem";
+import { removeFromWishlist } from "../../store/slices/wishlistSlice";
+import Swal from "sweetalert2";
 
 const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -14,7 +16,8 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const wishlist = useSelector((state) => state.wishlist.items);
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const dispatch = useDispatch();
   const { user, getUserData } = useFirebase();
   const [userData, setUserData] = useState(null);
 
@@ -85,27 +88,61 @@ const UserDashboard = () => {
     filterBookings();
   }, [statusFilter, searchTerm, bookings]);
 
-  
-  const activities = [
-    {
-      type: "booking",
-      icon: "fa-calendar-check",
-      text: "Booked Majestic Switzerland Tour",
-      time: "2 days ago",
-    },
-    {
-      type: "payment",
-      icon: "fa-credit-card",
-      text: "Made payment for Thailand Paradise",
-      time: "5 days ago",
-    },
-    {
-      type: "reward",
-      icon: "fa-gift",
-      text: "Earned 500 reward points",
-      time: "1 week ago",
-    },
-  ];
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      if (!user) return;
+      try {
+        const wishlistCollection = collection(db, "wishlist");
+        const q = query(wishlistCollection, where("userId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+        
+        const items = querySnapshot.docs.map(doc => ({
+          ...doc.data().tour,
+          wishlistId: doc.id,
+          createdAt: doc.data().createdAt
+        }));
+        
+        setWishlistItems(items);
+      } catch (error) {
+        console.error("Error fetching wishlist:", error);
+      }
+    };
+
+    fetchWishlist();
+  }, [user]);
+
+  const handleRemoveFromWishlist = async (tour) => {
+    try {
+      setLoading(true); // Show loading state
+      
+      // Remove from Firestore
+      await deleteDoc(doc(db, "wishlist", tour.wishlistId));
+      
+      // Remove from Redux state
+      dispatch(removeFromWishlist(tour.id));
+      
+      // Update local state
+      setWishlistItems(prevItems => prevItems.filter(item => item.id !== tour.id));
+      
+      // Show success message
+      Swal.fire({
+        title: "Success",
+        text: "Tour removed from wishlist",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false
+      });
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Failed to remove tour from wishlist. Please try again.",
+        icon: "error"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -193,10 +230,10 @@ const UserDashboard = () => {
           {activeTab === "overview" && (
             <div className="dashboard-tab active" id="overview">
               <div className="welcome-section">
-                <h1>Welcome back, John!</h1>
+                <h1>Welcome back, {userData?.name || "User"}!</h1>
                 <p>Here's what's happening with your travel plans</p>
               </div>
-              <div className="stats-grid">
+              <div className="user-stats-grid">
                 <div className="stat-card">
                   <i className="fas fa-plane"></i>
                   <div className="stat-info">
@@ -207,22 +244,8 @@ const UserDashboard = () => {
                 <div className="stat-card">
                   <i className="fas fa-heart"></i>
                   <div className="stat-info">
-                    <h3>12</h3>
+                    <h3>{wishlistItems.length}</h3>
                     <p>Saved Trips</p>
-                  </div>
-                </div>
-                <div className="stat-card">
-                  <i className="fas fa-map-marked-alt"></i>
-                  <div className="stat-info">
-                    <h3>8</h3>
-                    <p>Countries Visited</p>
-                  </div>
-                </div>
-                <div className="stat-card">
-                  <i className="fas fa-star"></i>
-                  <div className="stat-info">
-                    <h3>2,500</h3>
-                    <p>Reward Points</p>
                   </div>
                 </div>
               </div>
@@ -254,20 +277,25 @@ const UserDashboard = () => {
                   )}
                 </div>
               </div>
-              <div className="recent-activity">
-                <h2>Recent Activity</h2>
-                <div className="activity-timeline">
-                  {activities.map((activity, index) => (
-                    <div key={index} className="activity-item">
-                      <div className="activity-icon">
-                        <i className={`fas ${activity.icon}`}></i>
+              <div className="upcoming-trips">
+                <h2>Saved Trips</h2>
+                <div className="trip-cards">
+                  {loading ? (
+                    <p>Loading trips...</p>
+                  ) : wishlistItems.length > 0 ? (
+                    wishlistItems.map((wishlistItems) => (
+                      <div key={wishlistItems.id} className="trip-card">
+                      
+                        <div className="trip-content">
+                          <div className="trip-date">{wishlistItems.title}</div>
+                          <h3>{wishlistItems.description}</h3>
+                          
+                        </div>
                       </div>
-                      <div className="activity-content">
-                        <p>{activity.text}</p>
-                        <span className="activity-time">{activity.time}</span>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p>No upcoming trips found</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -331,9 +359,15 @@ const UserDashboard = () => {
             <div className="dashboard-tab active" id="wishlist">
               <h2>Saved Trips</h2>
               <div className="wishlist-container">
-                {wishlist.length > 0 ? (
-                  wishlist.map((tour) => (
-                    <WishlistItem key={tour.id} tour={tour} />
+                {loading ? (
+                  <p>Loading wishlist...</p>
+                ) : wishlistItems.length > 0 ? (
+                  wishlistItems.map((tour) => (
+                    <WishlistItem 
+                      key={tour.wishlistId} 
+                      tour={tour} 
+                      onRemove={() => handleRemoveFromWishlist(tour)} 
+                    />
                   ))
                 ) : (
                   <p>No saved trips available.</p>
