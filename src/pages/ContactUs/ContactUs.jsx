@@ -1,12 +1,16 @@
-import React, { useState } from "react";
-import styles from "./ContactUs.module.css"; 
+import React, { useState, useRef } from "react";
+import styles from "./ContactUs.module.css";
+import Swal from "sweetalert2";
+import { sendEmail } from "../../services/emailService";
 
 const ContactUs = () => {
+  const form = useRef();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,8 +19,31 @@ const ContactUs = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Thank you for contacting us! We will get back to you soon.");
-    setFormData({ name: "", email: "", message: "" });
+    setIsSubmitting(true);
+
+    sendEmail(form)
+      .then((result) => {
+        console.log("Email sent successfully:", result.text);
+        Swal.fire({
+          title: "Success!",
+          text: "Thank you for contacting us! We will get back to you soon.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+        setFormData({ name: "", email: "", message: "" });
+      })
+      .catch((error) => {
+        console.error("Error sending email:", error.text);
+        Swal.fire({
+          title: "Error!",
+          text: "There was a problem sending your message. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
@@ -27,7 +54,7 @@ const ContactUs = () => {
       </div>
 
       <div className={styles["contact-us-form"]}>
-        <form onSubmit={handleSubmit}>
+        <form ref={form} onSubmit={handleSubmit}>
           <div className={styles["form-group"]}>
             <label htmlFor="name">Name</label>
             <input
@@ -67,8 +94,12 @@ const ContactUs = () => {
             ></textarea>
           </div>
 
-          <button type="submit" className={styles["btn-primary"]}>
-            Send Message
+          <button
+            type="submit"
+            className={styles["btn-primary"]}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Sending..." : "Send Message"}
           </button>
         </form>
       </div>
