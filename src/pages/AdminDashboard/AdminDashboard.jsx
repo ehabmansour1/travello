@@ -8,7 +8,6 @@ import ManageUsers from "../../components/ManageUsers/ManageUsers";
 import ManageTours from "../../components/ManageTours/ManageTours";
 import ManageBlogs from "../../components/ManageBlogs/ManageBlogs";
 import ManagePayments from "../../components/ManagePayments/ManagePayments";
-import Analytics from "../../components/Analytics/Analytics";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");

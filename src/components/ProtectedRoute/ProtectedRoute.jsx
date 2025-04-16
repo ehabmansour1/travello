@@ -30,7 +30,7 @@ const ProtectedRoute = ({ children, requiredRole = "user" }) => {
   if (loading) {
     return (
       <div className="loading-container">
-        <div className="loading-spinner"></div>
+       
       </div>
     );
   }
