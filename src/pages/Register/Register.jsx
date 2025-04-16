@@ -10,7 +10,6 @@ const Register = () => {
   const { signup } = useFirebase();
   const navigate = useNavigate();
 
-  // تعريف التحقق باستخدام Yup
   const validationSchema = Yup.object({
     name: Yup.string().required("Full name is required"),
     username: Yup.string().required("Username is required"),
@@ -25,7 +24,6 @@ const Register = () => {
       .required("Confirm password is required"),
   });
 
-  // استخدام Formik لإدارة النموذج
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -67,7 +65,6 @@ const Register = () => {
         <h1>Create Account</h1>
         <p>Please fill in your details to register</p>
 
-        {/* عرض رسالة الخطأ العامة */}
         {formik.errors.general && (
           <div className="error-message">{formik.errors.general}</div>
         )}
@@ -81,10 +78,7 @@ const Register = () => {
               name="name"
               className="form-input"
               placeholder="Enter your full name"
-              value={formik.values.name}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              required
+              {...formik.getFieldProps("name")}
             />
             {formik.touched.name && formik.errors.name && (
               <div className="error-message">{formik.errors.name}</div>
@@ -99,10 +93,7 @@ const Register = () => {
               name="username"
               className="form-input"
               placeholder="Choose a username"
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              required
+              {...formik.getFieldProps("username")}
             />
             {formik.touched.username && formik.errors.username && (
               <div className="error-message">{formik.errors.username}</div>
@@ -117,10 +108,7 @@ const Register = () => {
               name="email"
               className="form-input"
               placeholder="Enter your email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              required
+              {...formik.getFieldProps("email")}
             />
             {formik.touched.email && formik.errors.email && (
               <div className="error-message">{formik.errors.email}</div>
@@ -135,10 +123,7 @@ const Register = () => {
               name="password"
               className="form-input"
               placeholder="Choose a password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              required
+              {...formik.getFieldProps("password")}
             />
             {formik.touched.password && formik.errors.password && (
               <div className="error-message">{formik.errors.password}</div>
@@ -153,10 +138,7 @@ const Register = () => {
               name="confirmPassword"
               className="form-input"
               placeholder="Confirm your password"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              required
+              {...formik.getFieldProps("confirmPassword")}
             />
             {formik.touched.confirmPassword &&
               formik.errors.confirmPassword && (

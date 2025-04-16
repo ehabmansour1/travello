@@ -10,7 +10,6 @@ const Login = () => {
   const { login, getUserData } = useFirebase();
   const navigate = useNavigate();
 
-  // تعريف التحقق باستخدام Yup
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address")
@@ -20,7 +19,6 @@ const Login = () => {
       .required("Password is required"),
   });
 
-  // استخدام Formik لإدارة النموذج
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -59,7 +57,6 @@ const Login = () => {
         <h1>Welcome Back</h1>
         <p>Please enter your details to sign in</p>
 
-        {/* عرض رسالة الخطأ العامة */}
         {formik.errors.general && (
           <div className="error-message">{formik.errors.general}</div>
         )}
@@ -68,15 +65,12 @@ const Login = () => {
           <div className="form-group">
             <label htmlFor="email">Email address</label>
             <input
-              type="email"
+              type="text"
               id="email"
               name="email"
               className="form-input"
               placeholder="Enter your email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              required
+              {...formik.getFieldProps("email")}
             />
             {formik.touched.email && formik.errors.email && (
               <div className="error-message">{formik.errors.email}</div>
@@ -91,10 +85,7 @@ const Login = () => {
               name="password"
               className="form-input"
               placeholder="Enter your password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              required
+              {...formik.getFieldProps("password")}
             />
             {formik.touched.password && formik.errors.password && (
               <div className="error-message">{formik.errors.password}</div>
@@ -126,4 +117,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login;
