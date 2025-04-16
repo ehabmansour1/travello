@@ -36,7 +36,7 @@
 
 .tours-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);  /* Changed to show exactly 2 columns */
+  grid-template-columns: repeat(2, 1fr); /* Changed to show exactly 2 columns */
   gap: 1.5rem;
   width: 100%;
 }
@@ -335,4 +335,34 @@ textarea.form-input {
   margin-left: 8px;
   color: #666;
   font-size: 14px;
+}
+
+.image-preview {
+  margin-top: 10px;
+  max-width: 200px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.image-preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
+
+input[type="file"]:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+#addTourForm input[type="file"] {
+  background-color: #333 !important;
+  border-color: #444 !important;
 }

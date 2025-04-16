@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./ManageTours.css";
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const ManageTours = () => {
   const [tours, setTours] = useState([]);
@@ -32,9 +39,9 @@ const ManageTours = () => {
       try {
         const toursCollection = collection(db, "tours");
         const tourSnapshot = await getDocs(toursCollection);
-        const tourList = tourSnapshot.docs.map(doc => ({
+        const tourList = tourSnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
         setTours(tourList);
         setFilteredTours(tourList);
@@ -60,9 +67,13 @@ const ManageTours = () => {
   useEffect(() => {
     const filterTours = () => {
       const filtered = tours.filter((tour) => {
-        const matchesSearch = tour.title?.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = categoryFilter === "all" || tour.category === categoryFilter;
-        const matchesStatus = statusFilter === "all" || tour.status === statusFilter;
+        const matchesSearch = tour.title
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
+        const matchesCategory =
+          categoryFilter === "all" || tour.category === categoryFilter;
+        const matchesStatus =
+          statusFilter === "all" || tour.status === statusFilter;
         return matchesSearch && matchesCategory && matchesStatus;
       });
       setFilteredTours(filtered);
@@ -73,9 +84,9 @@ const ManageTours = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -117,38 +128,70 @@ const ManageTours = () => {
 
   const handleDeleteTour = async (tourId) => {
     const result = await Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You won't be able to delete this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes!'
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes!",
     });
 
     if (result.isConfirmed) {
       try {
         await deleteDoc(doc(db, "tours", tourId));
-        setTours(tours.filter(tour => tour.id !== tourId));
-        Swal.fire(
-          'Deleted!',
-          'Tour has been deleted.',
-          'success'
-        );
+        setTours(tours.filter((tour) => tour.id !== tourId));
+        Swal.fire("Deleted!", "Tour has been deleted.", "success");
       } catch (error) {
         console.error("Error deleting tour:", error);
-        Swal.fire(
-          'Error!',
-          'Failed to delete tour.',
-          'error'
-        );
+        Swal.fire("Error!", "Failed to delete tour.", "error");
       }
     }
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.match(/image\/(jpeg|png|jpg)/)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid file type",
+        text: "Please upload a valid image file (JPEG, PNG, or JPG)",
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      Swal.fire({
+        icon: "error",
+        title: "File too large",
+        text: "Please upload an image smaller than 5MB",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prev) => ({ ...prev, image: reader.result }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!formData.image) {
+        Swal.fire({
+          icon: "error",
+          title: "Missing Image",
+          text: "Please upload a tour image",
+        });
+        return;
+      }
+
       if (editingTour) {
         // Update existing tour
         const tourRef = doc(db, "tours", editingTour.id);
@@ -162,20 +205,24 @@ const ManageTours = () => {
           rating: Number(formData.rating),
         });
 
-        setTours(tours.map(tour => 
-          tour.id === editingTour.id ? { 
-            ...tour, 
-            ...formData,
-            rating: Number(formData.rating)
-          } : tour
-        ));
+        setTours(
+          tours.map((tour) =>
+            tour.id === editingTour.id
+              ? {
+                  ...tour,
+                  ...formData,
+                  rating: Number(formData.rating),
+                }
+              : tour
+          )
+        );
 
         Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Tour updated successfully',
+          icon: "success",
+          title: "Success!",
+          text: "Tour updated successfully",
           timer: 1500,
-          showConfirmButton: false
+          showConfirmButton: false,
         });
       } else {
         // Add new tour
@@ -201,11 +248,11 @@ const ManageTours = () => {
         setTours([...tours, newTour]);
 
         Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'New tour added successfully',
+          icon: "success",
+          title: "Success!",
+          text: "New tour added successfully",
           timer: 1500,
-          showConfirmButton: false
+          showConfirmButton: false,
         });
       }
 
@@ -213,9 +260,9 @@ const ManageTours = () => {
     } catch (error) {
       console.error("Error saving tour:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'Failed to save tour. Please try again.',
+        icon: "error",
+        title: "Error!",
+        text: "Failed to save tour. Please try again.",
       });
     }
   };
@@ -291,12 +338,16 @@ const ManageTours = () => {
             </div>
             <div className="tour-content">
               <h3>{tour.title}</h3>
-              <p className="tour-location"><i className="fas fa-map-marker-alt"></i> {tour.location}</p>
+              <p className="tour-location">
+                <i className="fas fa-map-marker-alt"></i> {tour.location}
+              </p>
               <div className="tour-rating">
                 {[...Array(5)].map((_, index) => (
                   <i
                     key={index}
-                    className={`fas fa-star ${index < (tour.rating || 0) ? 'active' : ''}`}
+                    className={`fas fa-star ${
+                      index < (tour.rating || 0) ? "active" : ""
+                    }`}
                   ></i>
                 ))}
                 <span className="rating-text">({tour.rating || 0}/5)</span>
@@ -333,39 +384,39 @@ const ManageTours = () => {
       {showAddModal && (
         <div className="modal">
           <div className="modal-content tour-modal">
-            <h2>{editingTour ? 'Edit Tour' : 'Add New Tour'}</h2>
+            <h2>{editingTour ? "Edit Tour" : "Add New Tour"}</h2>
             <form id="addTourForm" onSubmit={handleSubmit}>
               <div className="tour-form-grid">
                 <div className="form-group">
                   <label>Tour Title</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
-                    className="form-input" 
-                    required 
+                    className="form-input"
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label>Location</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
-                    className="form-input" 
-                    required 
+                    className="form-input"
+                    required
                     placeholder="e.g., Paris, France"
                   />
                 </div>
                 <div className="form-group">
                   <label>Rating</label>
-                  <select 
+                  <select
                     name="rating"
                     value={formData.rating}
                     onChange={handleInputChange}
-                    className="form-input" 
+                    className="form-input"
                     required
                   >
                     <option value="1">1 Star</option>
@@ -377,11 +428,11 @@ const ManageTours = () => {
                 </div>
                 <div className="form-group">
                   <label>Category</label>
-                  <select 
+                  <select
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="form-input" 
+                    className="form-input"
                     required
                   >
                     <option value="adventure">Adventure</option>
@@ -392,44 +443,44 @@ const ManageTours = () => {
                 </div>
                 <div className="form-group">
                   <label>Price (USD)</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     name="price"
                     value={formData.price}
                     onChange={handleInputChange}
-                    className="form-input" 
-                    required 
+                    className="form-input"
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label>Duration (days)</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     name="duration"
                     value={formData.duration}
                     onChange={handleInputChange}
-                    className="form-input" 
-                    required 
+                    className="form-input"
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label>Max Group Size</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     name="maxGroupSize"
                     value={formData.maxGroupSize}
                     onChange={handleInputChange}
-                    className="form-input" 
-                    required 
+                    className="form-input"
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label>Difficulty</label>
-                  <select 
+                  <select
                     name="difficulty"
                     value={formData.difficulty}
                     onChange={handleInputChange}
-                    className="form-input" 
+                    className="form-input"
                     required
                   >
                     <option value="easy">Easy</option>
@@ -438,23 +489,27 @@ const ManageTours = () => {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Image URL</label>
-                  <input 
-                    type="url" 
-                    name="image"
-                    value={formData.image}
-                    onChange={handleInputChange}
-                    className="form-input" 
-                    required 
+                  <label>Tour Image</label>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/jpg"
+                    onChange={handleImageUpload}
+                    className="form-input"
+                    required={!editingTour}
                   />
+                  {formData.image && (
+                    <div className="image-preview">
+                      <img src={formData.image} alt="Tour preview" />
+                    </div>
+                  )}
                 </div>
                 <div className="form-group">
                   <label>Status</label>
-                  <select 
+                  <select
                     name="status"
                     value={formData.status}
                     onChange={handleInputChange}
-                    className="form-input" 
+                    className="form-input"
                     required
                   >
                     <option value="active">Active</option>
@@ -464,12 +519,12 @@ const ManageTours = () => {
                 </div>
                 <div className="form-group full-width">
                   <label>Description</label>
-                  <textarea 
+                  <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    className="form-input" 
-                    rows="4" 
+                    className="form-input"
+                    rows="4"
                     required
                   ></textarea>
                 </div>
@@ -484,7 +539,7 @@ const ManageTours = () => {
                   Cancel
                 </button>
                 <button type="submit" className="btn-primary">
-                  {editingTour ? 'Update Tour' : 'Create Tour'}
+                  {editingTour ? "Update Tour" : "Create Tour"}
                 </button>
               </div>
             </form>
