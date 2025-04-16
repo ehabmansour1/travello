@@ -75,6 +75,10 @@
   text-decoration: underline;
 }
 
+.error-message {
+  color: red;
+}
+
 @media (max-width: 480px) {
   .register-form {
     padding: 1.5rem;
