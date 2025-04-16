@@ -1,55 +1,57 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFirebase } from "../../contexts/FirebaseContext";
 import Swal from "sweetalert2";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import "./Login.css";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const { login, getUserData } = useFirebase();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  // تعريف التحقق باستخدام Yup
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  // استخدام Formik لإدارة النموذج
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      try {
+        const userCredential = await login(values.email, values.password);
+        const userData = await getUserData(userCredential.uid);
+        const userRole = userData?.role || "user";
 
-    try {
-      const userCredential = await login(formData.email, formData.password);
-      const userData = await getUserData(userCredential.uid);
-      const userRole = userData?.role || "user";
-
-      Swal.fire({
-        title: "Success!",
-        text: "You have successfully logged in.",
-        icon: "success",
-        confirmButtonText: "Continue",
-      }).then(() => {
-        if (userRole === "admin") {
-          navigate("/admin-dashboard");
-        } else {
-          navigate("/user-dashboard");
-        }
-      });
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+        Swal.fire({
+          title: "Success!",
+          text: "You have successfully logged in.",
+          icon: "success",
+          confirmButtonText: "Continue",
+        }).then(() => {
+          if (userRole === "admin") {
+            navigate("/admin-dashboard");
+          } else {
+            navigate("/user-dashboard");
+          }
+        });
+      } catch (error) {
+        setErrors({ general: error.message });
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
 
   return (
     <div className="login-container">
@@ -57,9 +59,12 @@ const Login = () => {
         <h1>Welcome Back</h1>
         <p>Please enter your details to sign in</p>
 
-        {error && <div className="error-message">{error}</div>}
+        {/* عرض رسالة الخطأ العامة */}
+        {formik.errors.general && (
+          <div className="error-message">{formik.errors.general}</div>
+        )}
 
-        <form className="login-form" onSubmit={handleSubmit}>
+        <form className="login-form" onSubmit={formik.handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email address</label>
             <input
@@ -68,10 +73,14 @@ const Login = () => {
               name="email"
               className="form-input"
               placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               required
             />
+            {formik.touched.email && formik.errors.email && (
+              <div className="error-message">{formik.errors.email}</div>
+            )}
           </div>
 
           <div className="form-group">
@@ -82,20 +91,25 @@ const Login = () => {
               name="password"
               className="form-input"
               placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               required
             />
+            {formik.touched.password && formik.errors.password && (
+              <div className="error-message">{formik.errors.password}</div>
+            )}
           </div>
+
           <Link to="/forget-password" className="register-link">
-              Forget Password?
-            </Link>
+            Forget Password?
+          </Link>
           <button
             type="submit"
             className="btn-primary login-btn"
-            disabled={loading}
+            disabled={formik.isSubmitting}
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {formik.isSubmitting ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
@@ -112,4 +126,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login;

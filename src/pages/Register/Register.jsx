@@ -1,64 +1,65 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFirebase } from "../../contexts/FirebaseContext";
 import Swal from "sweetalert2";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import "./Register.css";
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const { signup } = useFirebase();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  // تعريف التحقق باستخدام Yup
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Full name is required"),
+    username: Yup.string().required("Username is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Passwords must match")
+      .required("Confirm password is required"),
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  // استخدام Formik لإدارة النموذج
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema,
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      try {
+        const { name, username, email, password } = values;
+        await signup(email, password, {
+          name,
+          username,
+          role: "user",
+          createdAt: new Date().toISOString(),
+        });
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const { name, username, email, password } = formData;
-      await signup(email, password, {
-        name,
-        username,
-        role: "user",
-        createdAt: new Date().toISOString(),
-      });
-
-      Swal.fire({
-        title: "Success!",
-        text: "Your account has been created successfully.",
-        icon: "success",
-        confirmButtonText: "Continue",
-      }).then(() => {
-        navigate("/user-dashboard");
-      });
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+        Swal.fire({
+          title: "Success!",
+          text: "Your account has been created successfully.",
+          icon: "success",
+          confirmButtonText: "Continue",
+        }).then(() => {
+          navigate("/user-dashboard");
+        });
+      } catch (error) {
+        setErrors({ general: error.message });
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
 
   return (
     <div className="login-container">
@@ -66,9 +67,12 @@ const Register = () => {
         <h1>Create Account</h1>
         <p>Please fill in your details to register</p>
 
-        {error && <div className="error-message">{error}</div>}
+        {/* عرض رسالة الخطأ العامة */}
+        {formik.errors.general && (
+          <div className="error-message">{formik.errors.general}</div>
+        )}
 
-        <form className="login-form" onSubmit={handleSubmit}>
+        <form className="login-form" onSubmit={formik.handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Full Name</label>
             <input
@@ -77,10 +81,14 @@ const Register = () => {
               name="name"
               className="form-input"
               placeholder="Enter your full name"
-              value={formData.name}
-              onChange={handleChange}
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               required
             />
+            {formik.touched.name && formik.errors.name && (
+              <div className="error-message">{formik.errors.name}</div>
+            )}
           </div>
 
           <div className="form-group">
@@ -91,10 +99,14 @@ const Register = () => {
               name="username"
               className="form-input"
               placeholder="Choose a username"
-              value={formData.username}
-              onChange={handleChange}
+              value={formik.values.username}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               required
             />
+            {formik.touched.username && formik.errors.username && (
+              <div className="error-message">{formik.errors.username}</div>
+            )}
           </div>
 
           <div className="form-group">
@@ -105,10 +117,14 @@ const Register = () => {
               name="email"
               className="form-input"
               placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               required
             />
+            {formik.touched.email && formik.errors.email && (
+              <div className="error-message">{formik.errors.email}</div>
+            )}
           </div>
 
           <div className="form-group">
@@ -119,10 +135,14 @@ const Register = () => {
               name="password"
               className="form-input"
               placeholder="Choose a password"
-              value={formData.password}
-              onChange={handleChange}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               required
             />
+            {formik.touched.password && formik.errors.password && (
+              <div className="error-message">{formik.errors.password}</div>
+            )}
           </div>
 
           <div className="form-group">
@@ -133,18 +153,25 @@ const Register = () => {
               name="confirmPassword"
               className="form-input"
               placeholder="Confirm your password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
+              value={formik.values.confirmPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               required
             />
+            {formik.touched.confirmPassword &&
+              formik.errors.confirmPassword && (
+                <div className="error-message">
+                  {formik.errors.confirmPassword}
+                </div>
+              )}
           </div>
 
           <button
             type="submit"
             className="btn-primary login-btn"
-            disabled={loading}
+            disabled={formik.isSubmitting}
           >
-            {loading ? "Creating account..." : "Register"}
+            {formik.isSubmitting ? "Creating account..." : "Register"}
           </button>
         </form>
 
