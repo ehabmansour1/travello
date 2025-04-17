@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./ManageBlogs.css";
 import {
   collection,
@@ -31,6 +31,8 @@ const ManageBlogs = () => {
       avatar: "",
     },
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
 
   // Fetch blogs from Firestore
   useEffect(() => {
@@ -73,6 +75,31 @@ const ManageBlogs = () => {
   useEffect(() => {
     filterPosts();
   }, [filterPosts]);
+
+  const paginatedPosts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredPosts.slice(startIndex, endIndex);
+  }, [filteredPosts, currentPage, itemsPerPage]);
+
+  const totalPages = useMemo(() => 
+    Math.ceil(filteredPosts.length / itemsPerPage)
+  , [filteredPosts.length, itemsPerPage]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value);
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
+
+  useEffect(() => {
+    // Reset to first page when filters change
+    setCurrentPage(1);
+  }, [searchTerm, categoryFilter, statusFilter]);
 
   const showCreatePostModal = () => {
     setFormData({
@@ -299,8 +326,8 @@ const ManageBlogs = () => {
       </div>
 
       <div className="blog-posts-grid">
-        {filteredPosts.length > 0 ? (
-          filteredPosts.map((post) => (
+        {paginatedPosts.length > 0 ? (
+          paginatedPosts.map((post) => (
             <div key={post.id} className="blog-post-card">
               <div
                 className="post-image"
@@ -378,6 +405,53 @@ const ManageBlogs = () => {
             <p>Try adjusting your search or filters</p>
           </div>
         )}
+      </div>
+
+      <div className="pagination">
+        <button
+          onClick={() => handlePageChange(1)}
+          disabled={currentPage === 1}
+        >
+          <i className="fas fa-angle-double-left"></i>
+        </button>
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <i className="fas fa-angle-left"></i>
+        </button>
+        
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index + 1}
+            onClick={() => handlePageChange(index + 1)}
+            className={currentPage === index + 1 ? 'active' : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+        
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <i className="fas fa-angle-right"></i>
+        </button>
+        <button
+          onClick={() => handlePageChange(totalPages)}
+          disabled={currentPage === totalPages}
+        >
+          <i className="fas fa-angle-double-right"></i>
+        </button>
+
+        <div className="items-per-page">
+          <span>Items per page:</span>
+          <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+            <option value={6}>6</option>
+            <option value={12}>12</option>
+            <option value={24}>24</option>
+          </select>
+        </div>
       </div>
 
       {modalContent && (
