@@ -8,6 +8,7 @@ import ManageUsers from "../../components/ManageUsers/ManageUsers";
 import ManageTours from "../../components/ManageTours/ManageTours";
 import ManageBlogs from "../../components/ManageBlogs/ManageBlogs";
 import ManagePayments from "../../components/ManagePayments/ManagePayments";
+import userPic from "../../assets/images/user.png";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -42,7 +43,7 @@ const AdminDashboard = () => {
           <nav className="admin-nav">
             <div className="user-info">
               <img
-                src="https://tse4.mm.bing.net/th?id=OIP.hGSCbXlcOjL_9mmzerqAbQHaHa&rs=1&pid=ImgDetMain"
+                src= {userPic}
                 alt="Profile"
                 className="avatar"
               />

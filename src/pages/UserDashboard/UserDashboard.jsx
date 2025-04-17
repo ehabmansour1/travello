@@ -8,6 +8,8 @@ import { useFirebase } from "../../contexts/FirebaseContext";
 import WishlistItem from "../../components/Wishlist/WishlistItem";
 import { removeFromWishlist } from "../../store/slices/wishlistSlice";
 import Swal from "sweetalert2";
+import userPic from "../../assets/images/user.png";
+
 
 const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -170,8 +172,7 @@ const UserDashboard = () => {
               <div className="user-info">
                 <img
                   src={
-                    userData?.photoURL ||
-                    "https://tse4.mm.bing.net/th?id=OIP.hGSCbXlcOjL_9mmzerqAbQHaHa&rs=1&pid=ImgDetMain"
+                    userData?.profilePic || userPic // Use user's profile picture or default
                   }
                   alt="Profile"
                   className="avatar"
