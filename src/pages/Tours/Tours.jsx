@@ -15,6 +15,8 @@ const Tours = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
   const dispatch = useDispatch();
   const wishlistState = useSelector((state) => state.wishlist);
   const { user } = useFirebase();
@@ -116,6 +118,28 @@ const Tours = () => {
       ? tours
       : tours.filter((tour) => tour.category === activeTab);
 
+  // Calculate pagination
+  const indexOfLastTour = currentPage * itemsPerPage;
+  const indexOfFirstTour = indexOfLastTour - itemsPerPage;
+  const currentTours = filteredTours.slice(indexOfFirstTour, indexOfLastTour);
+  const totalPages = Math.ceil(filteredTours.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value);
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  // Reset to first page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab]);
+
   if (loading) {
     return (
       <div className="tours-page">
@@ -165,7 +189,7 @@ const Tours = () => {
       </div>
 
       <div className="tours-grid">
-        {filteredTours.map((tour) => {
+        {currentTours.map((tour) => {
           const isInWishlist = wishlistState.items.some(
             (item) => item.id === tour.id
           );
@@ -210,9 +234,56 @@ const Tours = () => {
         })}
       </div>
       
-      {filteredTours.length === 0 && (
+      {filteredTours.length === 0 ? (
         <div className="no-tours">
           <p>No tours found in this category.</p>
+        </div>
+      ) : (
+        <div className="pagination">
+          <button
+            onClick={() => handlePageChange(1)}
+            disabled={currentPage === 1}
+          >
+            <i className="fas fa-angle-double-left"></i>
+          </button>
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            <i className="fas fa-angle-left"></i>
+          </button>
+          
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => handlePageChange(index + 1)}
+              className={currentPage === index + 1 ? 'active' : ''}
+            >
+              {index + 1}
+            </button>
+          ))}
+          
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            <i className="fas fa-angle-right"></i>
+          </button>
+          <button
+            onClick={() => handlePageChange(totalPages)}
+            disabled={currentPage === totalPages}
+          >
+            <i className="fas fa-angle-double-right"></i>
+          </button>
+
+          <div className="items-per-page">
+            <span>Items per page:</span>
+            <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+              <option value={6}>6</option>
+              <option value={12}>12</option>
+              <option value={24}>24</option>
+            </select>
+          </div>
         </div>
       )}
     </div>

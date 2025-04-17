@@ -68,8 +68,6 @@ const Wishlist = () => {
         return a.price - b.price;
       case "price-high":
         return b.price - a.price;
-      case "duration":
-        return a.duration.localeCompare(b.duration);
       default:
         return 0;
     }
@@ -103,7 +101,6 @@ const Wishlist = () => {
                 <option value="date-added">Date Added</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
-                <option value="duration">Duration</option>
               </select>
             </div>
 

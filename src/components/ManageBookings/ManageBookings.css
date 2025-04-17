@@ -130,6 +130,12 @@
   border-radius: 24px;
   padding: 1.5rem;
   backdrop-filter: blur(10px);
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 1rem;
 }
 
 .bookings-table-container {
@@ -145,9 +151,6 @@
   border-collapse: separate;
   border-spacing: 0;
   margin-top: 1rem;
-}
-
-.bookings-table {
   width: 100%;
   border-collapse: collapse;
 }
@@ -157,10 +160,6 @@
   padding: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   text-align: left;
-}
-
-.bookings-table th,
-.bookings-table td {
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -170,9 +169,6 @@
   text-align: left;
   color: rgba(255, 255, 255, 0.7);
   font-weight: 600;
-}
-
-.bookings-table th {
   background: rgba(255, 255, 255, 0.05);
   font-weight: 600;
 }
@@ -193,9 +189,6 @@
   font-size: 0.9rem;
   text-align: center;
   display: inline-block;
-}
-
-.status-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -206,9 +199,6 @@
 .status-badge.pending {
   background: rgba(255, 153, 51, 0.2);
   color: #ff9933;
-}
-
-.status-badge.pending {
   background-color: rgba(255, 193, 7, 0.2);
   color: #ffc107;
 }
@@ -216,9 +206,6 @@
 .status-badge.confirmed {
   background: rgba(51, 255, 153, 0.2);
   color: #33ff99;
-}
-
-.status-badge.confirmed {
   background-color: rgba(40, 167, 69, 0.2);
   color: #28a745;
 }
@@ -226,9 +213,6 @@
 .status-badge.cancelled {
   background: rgba(255, 51, 102, 0.2);
   color: #ff3366;
-}
-
-.status-badge.cancelled {
   background-color: rgba(220, 53, 69, 0.2);
   color: #dc3545;
 }
@@ -279,6 +263,93 @@
   font-size: 0.85rem;
   margin-top: 0.25rem;
   font-style: italic;
+}
+
+/* Table Pagination Styles */
+.table-pagination {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.pagination button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination button.active {
+  background: rgba(255, 51, 102, 0.2);
+  border-color: rgba(255, 51, 102, 0.5);
+}
+
+.items-per-page {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 1rem;
+}
+
+.items-per-page select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.table-info {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .table-pagination {
+    .pagination {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .items-per-page {
+      width: 100%;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+  }
 }
 
 @media screen and (max-width: 768px) {
