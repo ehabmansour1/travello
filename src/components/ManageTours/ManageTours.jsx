@@ -10,6 +10,33 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import Swal from "sweetalert2";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+const tourValidationSchema = Yup.object().shape({
+  title: Yup.string()
+    .required("Title is required")
+    .min(3, "Title must be at least 3 characters"),
+  location: Yup.string().required("Location is required"),
+  rating: Yup.number().required("Rating is required").min(1).max(5),
+  category: Yup.string().required("Category is required"),
+  price: Yup.number()
+    .required("Price is required")
+    .positive("Price must be positive"),
+  duration: Yup.number()
+    .required("Duration is required")
+    .positive("Duration must be positive")
+    .integer("Duration must be a whole number"),
+  maxGroupSize: Yup.number()
+    .required("Max group size is required")
+    .positive("Group size must be positive")
+    .integer("Group size must be a whole number"),
+  difficulty: Yup.string().required("Difficulty is required"),
+  description: Yup.string()
+    .required("Description is required")
+    .min(10, "Description must be at least 10 characters"),
+  status: Yup.string().required("Status is required"),
+});
 
 const ManageTours = () => {
   const [tours, setTours] = useState([]);
@@ -83,14 +110,6 @@ const ManageTours = () => {
 
     filterTours();
   }, [searchTerm, categoryFilter, statusFilter, tours]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
   const handleAddTourModal = () => {
     setEditingTour(null);
@@ -182,10 +201,9 @@ const ManageTours = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      if (!formData.image) {
+      if (!values.image) {
         Swal.fire({
           icon: "error",
           title: "Missing Image",
@@ -195,16 +213,14 @@ const ManageTours = () => {
       }
 
       if (editingTour) {
-        // Update existing tour
         const tourRef = doc(db, "tours", editingTour.id);
         await updateDoc(tourRef, {
-          ...formData,
-          price: Number(formData.price),
-          maxGroupSize: Number(formData.maxGroupSize),
-          duration: Number(formData.duration),
+          ...values,
+          price: Number(values.price),
+          maxGroupSize: Number(values.maxGroupSize),
+          duration: Number(values.duration),
           bookings: editingTour.bookings || 0,
-          location: formData.location,
-          rating: Number(formData.rating),
+          rating: Number(values.rating),
         });
 
         setTours(
@@ -212,8 +228,8 @@ const ManageTours = () => {
             tour.id === editingTour.id
               ? {
                   ...tour,
-                  ...formData,
-                  rating: Number(formData.rating),
+                  ...values,
+                  rating: Number(values.rating),
                 }
               : tour
           )
@@ -227,23 +243,22 @@ const ManageTours = () => {
           showConfirmButton: false,
         });
       } else {
-        // Add new tour
         const toursCollection = collection(db, "tours");
         const docRef = await addDoc(toursCollection, {
-          ...formData,
-          price: Number(formData.price),
-          maxGroupSize: Number(formData.maxGroupSize),
-          duration: Number(formData.duration),
+          ...values,
+          price: Number(values.price),
+          maxGroupSize: Number(values.maxGroupSize),
+          duration: Number(values.duration),
           bookings: 0,
-          rating: Number(formData.rating),
+          rating: Number(values.rating),
           dates: [],
         });
 
         const newTour = {
           id: docRef.id,
-          ...formData,
+          ...values,
           bookings: 0,
-          rating: Number(formData.rating),
+          rating: Number(values.rating),
           dates: [],
         };
 
@@ -259,6 +274,7 @@ const ManageTours = () => {
       }
 
       handleCloseModal();
+      resetForm();
     } catch (error) {
       console.error("Error saving tour:", error);
       Swal.fire({
@@ -266,6 +282,8 @@ const ManageTours = () => {
         title: "Error!",
         text: "Failed to save tour. Please try again.",
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -460,164 +478,153 @@ const ManageTours = () => {
         <div className="modal">
           <div className="modal-content tour-modal">
             <h2>{editingTour ? "Edit Tour" : "Add New Tour"}</h2>
-            <form id="addTourForm" onSubmit={handleSubmit}>
-              <div className="tour-form-grid">
-                <div className="form-group">
-                  <label>Tour Title</label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Location</label>
-                  <input
-                    type="text"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                    placeholder="e.g., Paris, France"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Rating</label>
-                  <select
-                    name="rating"
-                    value={formData.rating}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                  >
-                    <option value="1">1 Star</option>
-                    <option value="2">2 Stars</option>
-                    <option value="3">3 Stars</option>
-                    <option value="4">4 Stars</option>
-                    <option value="5">5 Stars</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Category</label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                  >
-                    <option value="adventure">Adventure</option>
-                    <option value="cultural">Cultural</option>
-                    <option value="beach">Beach</option>
-                    <option value="mountain">Mountain</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Price (USD)</label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Duration (days)</label>
-                  <input
-                    type="number"
-                    name="duration"
-                    value={formData.duration}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Max Group Size</label>
-                  <input
-                    type="number"
-                    name="maxGroupSize"
-                    value={formData.maxGroupSize}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Difficulty</label>
-                  <select
-                    name="difficulty"
-                    value={formData.difficulty}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                  >
-                    <option value="easy">Easy</option>
-                    <option value="moderate">Moderate</option>
-                    <option value="challenging">Challenging</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Tour Image</label>
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/jpg"
-                    onChange={handleImageUpload}
-                    className="form-input"
-                    required={!editingTour}
-                  />
-                  {formData.image && (
-                    <div className="image-preview">
-                      <img src={formData.image} alt="Tour preview" />
-                    </div>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label>Status</label>
-                  <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                  >
-                    <option value="active">Active</option>
-                    <option value="draft">Draft</option>
-                    <option value="archived">Archived</option>
-                  </select>
-                </div>
-                <div className="form-group full-width">
-                  <label>Description</label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    rows="4"
-                    required
-                  ></textarea>
-                </div>
-              </div>
+            <Formik
+              initialValues={formData}
+              validationSchema={tourValidationSchema}
+              onSubmit={handleSubmit}
+              enableReinitialize
+            >
+              {({ isSubmitting, values }) => (
+                <Form className="tour-form-grid">
+                  <div className="form-group">
+                    <label>Tour Title</label>
+                    <Field
+                      type="text"
+                      name="title"
+                      className="form-input"
+                    />
+                    <ErrorMessage name="title" component="div" className="error-message" />
+                  </div>
 
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={handleCloseModal}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-primary">
-                  {editingTour ? "Update Tour" : "Create Tour"}
-                </button>
-              </div>
-            </form>
+                  <div className="form-group">
+                    <label>Location</label>
+                    <Field
+                      type="text"
+                      name="location"
+                      className="form-input"
+                      placeholder="e.g., Paris, France"
+                    />
+                    <ErrorMessage name="location" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Rating</label>
+                    <Field as="select" name="rating" className="form-input">
+                      <option value="1">1 Star</option>
+                      <option value="2">2 Stars</option>
+                      <option value="3">3 Stars</option>
+                      <option value="4">4 Stars</option>
+                      <option value="5">5 Stars</option>
+                    </Field>
+                    <ErrorMessage name="rating" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Category</label>
+                    <Field as="select" name="category" className="form-input">
+                      <option value="adventure">Adventure</option>
+                      <option value="cultural">Cultural</option>
+                      <option value="beach">Beach</option>
+                      <option value="mountain">Mountain</option>
+                    </Field>
+                    <ErrorMessage name="category" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Price (USD)</label>
+                    <Field
+                      type="number"
+                      name="price"
+                      className="form-input"
+                    />
+                    <ErrorMessage name="price" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Duration (days)</label>
+                    <Field
+                      type="number"
+                      name="duration"
+                      className="form-input"
+                    />
+                    <ErrorMessage name="duration" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Max Group Size</label>
+                    <Field
+                      type="number"
+                      name="maxGroupSize"
+                      className="form-input"
+                    />
+                    <ErrorMessage name="maxGroupSize" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Difficulty</label>
+                    <Field as="select" name="difficulty" className="form-input">
+                      <option value="easy">Easy</option>
+                      <option value="moderate">Moderate</option>
+                      <option value="challenging">Challenging</option>
+                    </Field>
+                    <ErrorMessage name="difficulty" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Tour Image</label>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/jpg"
+                      onChange={(e) => handleImageUpload(e)}
+                      className="form-input"
+                    />
+                    {values.image && (
+                      <div className="image-preview">
+                        <img src={values.image} alt="Tour preview" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label>Status</label>
+                    <Field as="select" name="status" className="form-input">
+                      <option value="active">Active</option>
+                      <option value="draft">Draft</option>
+                      <option value="archived">Archived</option>
+                    </Field>
+                    <ErrorMessage name="status" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group full-width">
+                    <label>Description</label>
+                    <Field
+                      as="textarea"
+                      name="description"
+                      className="form-input"
+                      rows="4"
+                    />
+                    <ErrorMessage name="description" component="div" className="error-message" />
+                  </div>
+
+                  <div className="modal-actions">
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={handleCloseModal}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="btn-primary"
+                      disabled={isSubmitting}
+                    >
+                      {editingTour ? "Update Tour" : "Create Tour"}
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       )}

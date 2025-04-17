@@ -15,7 +15,7 @@ const Login = () => {
       .email("Invalid email address")
       .required("Email is required"),
     password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
+      .min(8, "Password must be at least 8 characters")
       .required("Password is required"),
   });
 
@@ -43,8 +43,10 @@ const Login = () => {
             navigate("/user-dashboard");
           }
         });
-      } catch (error) {
-        setErrors({ general: error.message });
+      } catch {
+        setErrors({ 
+          general: "The email or password may be incorrect. Please try again." 
+        });
       } finally {
         setSubmitting(false);
       }

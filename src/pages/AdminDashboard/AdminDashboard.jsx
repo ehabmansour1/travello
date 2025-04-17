@@ -29,8 +29,8 @@ const AdminDashboard = () => {
         return <ManageTours />;
       case "blogs":
         return <ManageBlogs />;
-      case "payments":
-        return <ManagePayments />;
+      // case "payments":
+      //   return <ManagePayments />;
       default:
         return null;
     }
@@ -102,7 +102,7 @@ const AdminDashboard = () => {
             >
               Manage Blogs
             </a>
-            <a
+            {/* <a
               href="#payments"
               className={activeTab === "payments" ? "active" : ""}
               onClick={(e) => {
@@ -111,7 +111,7 @@ const AdminDashboard = () => {
               }}
             >
               Manage Payments
-            </a>
+            </a> */}
 
             <Link to="/liveChat" className="admin-nav-link">
               Live Chat

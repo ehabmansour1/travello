@@ -4,12 +4,14 @@ import styles from "./TourDetails.module.css";
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import Swal from 'sweetalert2';
+import { useFirebase } from "../../contexts/FirebaseContext";
 
 const TourDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [tour, setTour] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useFirebase();
 
   useEffect(() => {
     const fetchTour = async () => {
@@ -42,6 +44,25 @@ const TourDetails = () => {
 
     fetchTour();
   }, [id, navigate]);
+
+  const handleBookNow = () => {
+    if (!user) {
+      Swal.fire({
+        title: 'Login Required',
+        text: 'Please login to book this tour',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Login',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login');
+        }
+      });
+      return;
+    }
+    navigate(`/booking/${tour.id}`);
+  };
 
   if (loading) {
     return (
@@ -169,7 +190,7 @@ const TourDetails = () => {
             </div>
             <button
               className={styles["btn-primary"]}
-              onClick={() => navigate(`/booking/${tour.id}`)}
+              onClick={handleBookNow}
             >
               Book Now
             </button>

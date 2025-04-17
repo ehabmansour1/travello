@@ -85,3 +85,7 @@
   .btn-primary:active {
     transform: translateY(0);
   }
+  
+.error-message {
+  color: red;
+}

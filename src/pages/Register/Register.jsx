@@ -12,12 +12,23 @@ const Register = () => {
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Full name is required"),
-    username: Yup.string().required("Username is required"),
+    username: Yup.string()
+      .matches(
+        /^[a-zA-Z0-9_]{3,16}$/,
+        "Username must be 3-16 characters long and can only contain letters, numbers, and underscores"
+      )
+      .required("Username is required"),
     email: Yup.string()
-      .email("Invalid email address")
+      .matches(
+        /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+        "Please enter a valid email address"
+      )
       .required("Email is required"),
     password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      )
       .required("Password is required"),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password"), null], "Passwords must match")

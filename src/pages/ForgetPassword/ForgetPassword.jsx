@@ -1,38 +1,37 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import { useFirebase } from "../../contexts/FirebaseContext";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export default function ForgetPassword() {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(false);
   const { resetPassword } = useFirebase();
-  const navigate = useNavigate();
 
-  const handleInputChange = (e) => {
-    setEmail(e.target.value);
-  };
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .matches(
+        /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+        "Please enter a valid email address"
+      )
+      .required("Email is required"),
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
-
-    try {
-      await resetPassword(email);
-      setSuccess("Password reset email sent. Please check your inbox.");
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLoginRedirect = () => {
-    navigate("/login");
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+    },
+    validationSchema,
+    onSubmit: async (values, { setSubmitting, setStatus }) => {
+      try {
+        await resetPassword(values.email);
+        setStatus({ success: "Password reset email sent. Please check your inbox." });
+      } catch (error) {
+        setStatus({ error: error.message });
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
 
   return (
     <div className="login-container">
@@ -42,11 +41,8 @@ export default function ForgetPassword() {
           Enter your email address and we'll send you instructions to reset your
           password
         </p>
-
-        {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">{success}</div>}
-
-        <form className="login-form" onSubmit={handleSubmit}>
+        <hr />
+        <form className="login-form" onSubmit={formik.handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email address</label>
             <input
@@ -54,29 +50,34 @@ export default function ForgetPassword() {
               id="email"
               className="form-input"
               placeholder="Enter your email"
-              value={email}
-              onChange={handleInputChange}
-              required
+              {...formik.getFieldProps("email")}
             />
+            {formik.touched.email && formik.errors.email && (
+              <div className="error-message">{formik.errors.email}</div>
+            )}
           </div>
+
+          {formik.status?.error && (
+          <div className="error-message">{formik.status.error}</div>
+        )}
+        {formik.status?.success && (
+          <div className="success-message">{formik.status.success}</div>
+        )}
+
 
           <button
             type="submit"
             className="btn-primary login-btn"
-            disabled={loading}
+            disabled={formik.isSubmitting}
           >
-            {loading ? "Sending..." : "Send Reset Link"}
+            {formik.isSubmitting ? "Sending..." : "Send Reset Link"}
           </button>
         </form>
 
         <div className="login-footer">
           <p>
             Remember your password?{" "}
-            <Link
-              to="/login"
-              className="register-link"
-              onClick={handleLoginRedirect}
-            >
+            <Link to="/login" className="register-link">
               Login here
             </Link>
           </p>
