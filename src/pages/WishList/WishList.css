@@ -1,7 +1,7 @@
 .wishlist-page {
   min-height: 100vh;
   background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
-    url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000");
+  url("../../assets/images/hero.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

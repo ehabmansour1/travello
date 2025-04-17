@@ -9,7 +9,7 @@
   padding: 2rem;
   margin-top: 0;
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),
-    url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000");
+    url("../../assets/images/hero.jpg");
   background-size: cover;
   background-position: center;
   /* background-attachment: fixed; */
