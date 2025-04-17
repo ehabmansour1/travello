@@ -10,6 +10,25 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import Swal from "sweetalert2";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+const blogValidationSchema = Yup.object().shape({
+  title: Yup.string()
+    .required("Title is required")
+    .min(3, "Title must be at least 3 characters"),
+  excerpt: Yup.string()
+    .required("Excerpt is required")
+    .min(10, "Excerpt must be at least 10 characters"),
+  content: Yup.string()
+    .required("Content is required")
+    .min(50, "Content must be at least 50 characters"),
+  category: Yup.string().required("Category is required"),
+  tags: Yup.array()
+    .of(Yup.string())
+    .min(1, "At least one tag is required"),
+  status: Yup.string().required("Status is required"),
+});
 
 const ManageBlogs = () => {
   const [blogPosts, setBlogPosts] = useState([]);
@@ -148,35 +167,6 @@ const ManageBlogs = () => {
     });
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleTagInput = (e) => {
-    if (e.key === "Enter" && e.target.value) {
-      e.preventDefault();
-      const newTag = e.target.value.trim().toLowerCase();
-      if (!formData.tags.includes(newTag)) {
-        setFormData((prev) => ({
-          ...prev,
-          tags: [...prev.tags, newTag],
-        }));
-      }
-      e.target.value = "";
-    }
-  };
-
-  const removeTag = (tagToRemove) => {
-    setFormData((prev) => ({
-      ...prev,
-      tags: prev.tags.filter((tag) => tag !== tagToRemove),
-    }));
-  };
-
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -208,11 +198,9 @@ const ManageBlogs = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleBlogPostFormSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleBlogPostFormSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      if (!formData.featuredImage) {
+      if (!values.featuredImage) {
         Swal.fire({
           icon: "error",
           title: "Missing Image",
@@ -222,16 +210,15 @@ const ManageBlogs = () => {
       }
 
       const blogData = {
-        ...formData,
+        ...values,
         publishDate: new Date(),
         lastModified: new Date(),
-        views: formData.views || 0,
-        shares: formData.shares || 0,
-        comments: formData.comments || 0,
+        views: values.views || 0,
+        shares: values.shares || 0,
+        comments: values.comments || 0,
       };
 
       if (modalContent.type === "edit" && modalContent.post.id) {
-        // Update existing blog
         const blogRef = doc(db, "blogs", modalContent.post.id);
         await updateDoc(blogRef, blogData);
         setBlogPosts((prev) =>
@@ -243,7 +230,6 @@ const ManageBlogs = () => {
         );
         Swal.fire("Success", "Blog post updated successfully!", "success");
       } else {
-        // Create new blog
         const blogsCollection = collection(db, "blogs");
         const docRef = await addDoc(blogsCollection, blogData);
         setBlogPosts((prev) => [...prev, { ...blogData, id: docRef.id }]);
@@ -251,9 +237,12 @@ const ManageBlogs = () => {
       }
 
       closeModal();
+      resetForm();
     } catch (error) {
       console.error("Error saving blog post:", error);
       Swal.fire("Error", "Failed to save blog post", "error");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -462,133 +451,155 @@ const ManageBlogs = () => {
                 ? "Create New Blog Post"
                 : "Edit Blog Post"}
             </h2>
-            <form id="blogPostForm" onSubmit={handleBlogPostFormSubmit}>
-              <div className="form-grid">
-                <div className="form-group full-width">
-                  <label>Title</label>
-                  <input
-                    type="text"
-                    name="title"
-                    className="form-input"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="form-group full-width">
-                  <label>Excerpt</label>
-                  <textarea
-                    name="excerpt"
-                    className="form-input"
-                    value={formData.excerpt}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Category</label>
-                  <select
-                    name="category"
-                    className="form-input"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="destinations">Destinations</option>
-                    <option value="tips">Travel Tips</option>
-                    <option value="stories">Travel Stories</option>
-                    <option value="guides">Travel Guides</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Status</label>
-                  <select
-                    name="status"
-                    className="form-input"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="published">Published</option>
-                    <option value="draft">Draft</option>
-                    <option value="scheduled">Scheduled</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Featured Image</label>
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/jpg"
-                    onChange={handleImageUpload}
-                    className="form-input"
-                    required={!modalContent.type === "edit"}
-                  />
-                  {formData.featuredImage && (
-                    <div className="image-preview">
-                      <img src={formData.featuredImage} alt="Preview" />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            featuredImage: "",
-                          }))
-                        }
-                        className="btn-danger btn-sm"
-                      >
-                        Remove Image
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label>Content</label>
-                  <textarea
-                    name="content"
-                    className="form-input content-editor"
-                    value={formData.content}
-                    onChange={handleInputChange}
-                    rows="10"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Tags</label>
-                  <div className="tags-input">
-                    <input
+            <Formik
+              initialValues={formData}
+              validationSchema={blogValidationSchema}
+              onSubmit={handleBlogPostFormSubmit}
+              enableReinitialize
+            >
+              {({ isSubmitting, values, setFieldValue }) => (
+                <Form className="form-grid">
+                  <div className="form-group full-width">
+                    <label>Title</label>
+                    <Field
                       type="text"
+                      name="title"
                       className="form-input"
-                      placeholder="Add a tag and press Enter"
-                      onKeyPress={handleTagInput}
                     />
-                    <div className="tags-container">
-                      {formData.tags.map((tag, index) => (
-                        <span key={index} className="tag">
-                          #{tag}
-                          <button type="button" onClick={() => removeTag(tag)}>
-                            &times;
-                          </button>
-                        </span>
-                      ))}
-                    </div>
+                    <ErrorMessage name="title" component="div" className="error-message" />
                   </div>
-                </div>
-              </div>
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={closeModal}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-primary">
-                  {modalContent.type === "create"
-                    ? "Create Post"
-                    : "Update Post"}
-                </button>
-              </div>
-            </form>
+
+                  <div className="form-group full-width">
+                    <label>Excerpt</label>
+                    <Field
+                      as="textarea"
+                      name="excerpt"
+                      className="form-input"
+                    />
+                    <ErrorMessage name="excerpt" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Category</label>
+                    <Field
+                      as="select"
+                      name="category"
+                      className="form-input"
+                    >
+                      <option value="destinations">Destinations</option>
+                      <option value="tips">Travel Tips</option>
+                      <option value="stories">Travel Stories</option>
+                      <option value="guides">Travel Guides</option>
+                    </Field>
+                    <ErrorMessage name="category" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Status</label>
+                    <Field
+                      as="select"
+                      name="status"
+                      className="form-input"
+                    >
+                      <option value="published">Published</option>
+                      <option value="draft">Draft</option>
+                      <option value="scheduled">Scheduled</option>
+                    </Field>
+                    <ErrorMessage name="status" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Featured Image</label>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/jpg"
+                      onChange={(e) => {
+                        handleImageUpload(e);
+                      }}
+                      className="form-input"
+                    />
+                    {values.featuredImage && (
+                      <div className="image-preview">
+                        <img src={values.featuredImage} alt="Preview" />
+                        <button
+                          type="button"
+                          onClick={() => setFieldValue("featuredImage", "")}
+                          className="btn-danger btn-sm"
+                        >
+                          Remove Image
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label>Tags</label>
+                    <div className="tags-input">
+                      <input
+                        type="text"
+                        className="form-input"
+                        placeholder="Add a tag and press Enter"
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter" && e.target.value) {
+                            e.preventDefault();
+                            const newTag = e.target.value.trim().toLowerCase();
+                            if (!values.tags.includes(newTag)) {
+                              setFieldValue("tags", [...values.tags, newTag]);
+                            }
+                            e.target.value = "";
+                          }
+                        }}
+                      />
+                      <div className="tags-container">
+                        {values.tags.map((tag, index) => (
+                          <span key={index} className="tag">
+                            #{tag}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newTags = values.tags.filter((t) => t !== tag);
+                                setFieldValue("tags", newTags);
+                              }}
+                            >
+                              &times;
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <ErrorMessage name="tags" component="div" className="error-message" />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Content</label>
+                    <Field
+                      as="textarea"
+                      name="content"
+                      className="form-input content-editor"
+                      rows="10"
+                    />
+                    <ErrorMessage name="content" component="div" className="error-message" />
+                  </div>
+
+                  <div className="modal-actions">
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={closeModal}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit"
+                      className="btn-primary"
+                      disabled={isSubmitting}
+                    >
+                      {modalContent.type === "create" ? "Create Post" : "Update Post"}
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       )}

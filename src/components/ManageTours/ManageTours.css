@@ -293,6 +293,17 @@ textarea.form-input {
   resize: vertical;
 }
 
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-input.error {
+  border-color: #dc3545;
+}
+
 /* Availability styles (if needed later) */
 .availability-grid {
   display: grid;

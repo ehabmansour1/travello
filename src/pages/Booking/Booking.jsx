@@ -92,6 +92,14 @@ export default function Booking() {
 
   const nextstep = () => {
     if (step === 2) {
+      if (!travelerFormData || !travelerFormData.firstName || !travelerFormData.lastName || !travelerFormData.whatsapp || !travelerFormData.phone) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Required Information Missing',
+          text: 'Please fill in all traveler information fields before proceeding.',
+        });
+        return;
+      }
       handleConfirmBooking();
     } else if (step !== 2) {
       setStep(step + 1);

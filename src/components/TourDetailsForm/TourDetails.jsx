@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./TourDetails.css";
 
-export default function TourDetails({ tour, numTravelers, onTravelersChange, onSpecialRequestsChange }) {
+export default function TourDetails({ tour, numTravelers, onTravelersChange }) {
   const [specialRequests, setSpecialRequests] = useState("");
 
   const handleTravelersChange = (change) => {
@@ -9,11 +9,6 @@ export default function TourDetails({ tour, numTravelers, onTravelersChange, onS
     if (newValue >= 1 && newValue <= (tour?.maxGroupSize || 10)) {
       onTravelersChange(newValue);
     }
-  };
-
-  const handleSpecialRequestsChange = (e) => {
-    setSpecialRequests(e.target.value);
-    onSpecialRequestsChange(e.target.value);
   };
 
   return (
@@ -55,7 +50,7 @@ export default function TourDetails({ tour, numTravelers, onTravelersChange, onS
             className="form-input" 
             placeholder="Please let us know if you have any special requirements or requests."
             value={specialRequests}
-            onChange={handleSpecialRequestsChange}
+            onChange={(e) => setSpecialRequests(e.target.value)}
           />
         </div>
       </div>

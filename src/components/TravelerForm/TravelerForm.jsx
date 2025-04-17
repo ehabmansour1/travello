@@ -26,7 +26,7 @@ export default function TravelerForm({ onFormDataChange }) {
                 <h3>Lead Traveler</h3>
                 <div className="form-grid">
                     <div className="form-group">
-                        <label>First Name</label>
+                        <label>First Name *</label>
                         <input 
                             type="text" 
                             name="firstName"
@@ -34,10 +34,11 @@ export default function TravelerForm({ onFormDataChange }) {
                             onChange={handleInputChange}
                             className="form-input" 
                             required 
+                            placeholder="Enter first name"
                         />
                     </div>
                     <div className="form-group">
-                        <label>Last Name</label>
+                        <label>Last Name *</label>
                         <input 
                             type="text" 
                             name="lastName"
@@ -45,10 +46,11 @@ export default function TravelerForm({ onFormDataChange }) {
                             onChange={handleInputChange}
                             className="form-input" 
                             required 
+                            placeholder="Enter last name"
                         />
                     </div>
                     <div className="form-group">
-                        <label>Whatsapp</label>
+                        <label>WhatsApp Number *</label>
                         <input 
                             type="tel" 
                             name="whatsapp"
@@ -56,10 +58,11 @@ export default function TravelerForm({ onFormDataChange }) {
                             onChange={handleInputChange}
                             className="form-input" 
                             required 
+                            placeholder="Enter WhatsApp number"
                         />
                     </div>
                     <div className="form-group">
-                        <label>Phone</label>
+                        <label>Phone Number *</label>
                         <input 
                             type="tel" 
                             name="phone"
@@ -67,6 +70,7 @@ export default function TravelerForm({ onFormDataChange }) {
                             onChange={handleInputChange}
                             className="form-input" 
                             required 
+                            placeholder="Enter phone number"
                         />
                     </div>
                 </div>
